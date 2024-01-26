@@ -22,14 +22,41 @@
 				href="css/libs.min.css">
 	<link rel="stylesheet"
 				href="css/style.min.css">
-	<title></title>
+	<title>Step Project Cards</title>
 </head>
 
 
 <body>
-	<header class="header"></header>
+	<header class="header">
+    <div class="header-logo">Логотип</div>
+    <div class="header-userActions">
+        <button id="header-userActions-loginButton">Вхід</button>
+    </div>
+</header>
 
-	<main class="main"></main>
+	<main class="main">
+		<section class="filter-form">
+			<label for="visitTitle">Заголовок/вміст візиту:</label>
+			<input type="text" id="visitTitle">
+	
+			<label for="visitStatus">Статус (Open/Done):</label>
+			<select id="visitStatus">
+				<option value="Open">Open</option>
+				<option value="Done">Done</option>
+			</select>
+	
+			<label for="urgency">Терміновість візиту:</label>
+			<select id="urgency">
+				<option value="High">High</option>
+				<option value="Normal">Normal</option>
+				<option value="Low">Low</option>
+			</select>
+		</section>
+	
+		<section class="visits-list">
+			
+		</section>
+	</main>
 	<footer class="footer"></footer>
 
 	<script src="js/libs.min.js"></script>
