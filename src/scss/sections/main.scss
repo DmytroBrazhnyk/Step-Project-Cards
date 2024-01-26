@@ -1,0 +1,699 @@
+// section Revolutionary editor
+
+.revolutionary-editor_wrapper{
+    margin-top: 80px;
+    margin-bottom: 120px;
+    & .editor__title{
+        width: 100%;
+        margin: 0 auto;
+        color: #635C73;
+        text-align: center;
+        font-family: Montserrat;
+        font-size: 26px;
+        font-weight: 700;
+        line-height: 28px;
+        text-transform: uppercase;
+    }
+    & .editor__text{
+        width: 276px;
+        margin: 0 auto;
+        margin-top: 27px;
+        color: #323232;
+        text-align: center;
+        font-family: Lato;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 20px;
+    }
+    & .editor__buttons_wrapper{
+        width: 251px;
+        gap: 10px;
+        margin: 0 auto;
+        margin-top: 36px;
+        flex-wrap: wrap;
+        justify-content: center;
+        
+        & .button_wrapper{
+            gap: 0;
+            &:last-child{
+                margin-top: 20px;
+            }
+            & .editor__btn_img{
+                margin-right: 3px;
+            }
+            & .editor__btn{
+                border: 1px solid #d5d5d5;
+                border-radius: 5px 0px 0px 5px;
+                background-color: #f6f6f6;
+                font-family: Lato;
+                font-size: 14px;
+                font-weight: 700;
+                padding: 4px 8px;
+            }
+            & .eye{
+                padding: 0;
+                width: 18px;
+                height: 16px;
+            }
+            & .star{
+                width: 15px;
+                height: 15px;
+            }
+            & .branch{
+                width: 15px;
+                height: 16px;
+            }
+            & .editor__btn-text{
+                font-family: Lato;
+                font-size: 12px;
+                font-weight: 700;
+                line-height: 14px;
+                margin: auto -1px;
+                padding: 5px 7px;
+                border: 1px solid #d5d5d5;
+                border-radius: 0px 5px 5px 0px;
+            }
+        }
+        
+    }
+    
+}
+// section People Are Talking About Fork
+.aboutFork{
+    &_wrapper{
+        background-image: url("/img/testmonials-bg\ 22.png");
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+        height: 1631px;
+        position: relative;
+    }
+    &_content{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    &_title{
+        padding-top: 57px;
+        color: #FFF;
+        text-align: center;
+        font-family: Montserrat;
+        font-size: 36px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 48px;
+    }
+    &_deck{
+        padding-top: 53px;
+        display: flex;
+        flex-direction: column;
+        gap: 41px;
+        &_card{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            width: 291px;
+            height: 166px;
+            box-sizing: border-box;
+            &_1{
+                padding: 0px 8px 4px 9px;
+                height: 168px;
+            }
+            &_2{
+                height: 166px;
+                padding: 0 12px;
+            }
+            &_3{
+                padding: 0px 20px 4px 21px;
+                height: 175px;
+            }
+            &_4{
+                padding: 0px 9px 4px 10px;
+                height: 147px;
+            }
+            &_5{
+                padding: 0px 5px 4px 5px;
+                height: 151px;
+            }
+            &_6{
+                padding: 0 22px;
+                height: 173px;
+            }
+            &_info{
+                color: #FFF;
+                text-align: center;
+                font-family: Lato;
+                font-size: 16px;
+                font-style: italic;
+                // font-weight: 700;     
+                line-height: 150%;           
+            }
+        }
+    }
+    &_paragraph{
+        padding-top: 29px;
+        width: 251px;
+        color: #A291A5;
+        text-align: center;
+        font-family: Lato;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 21px;
+    }
+    &_decorative{
+        position: absolute;
+        bottom: 0;
+        width: 80%;
+        border: 1px solid rgba(100, 87, 102, 1);
+    }
+}
+
+// section Here is what you get
+
+.features__wrapper{
+    & .features__tittle{
+        margin: 0 auto;
+        color: #8D81AC;
+        text-align: center;
+        font-family: Montserrat;
+        font-size: 32px;
+        font-weight: 700;
+        line-height: 38px;
+    }
+    & .features__content_wrapper{
+        justify-content: center;
+        margin: 0 auto;
+        margin-top: 36px;
+        flex-wrap: wrap;
+        gap: 40px;
+        & .feature__wrapper{
+            width: 269px;
+            & .feature__img{
+                margin: 0 auto;
+                display: block;
+            }
+            & .feature__img1{
+                width: 111px;
+                height: 64px;
+            }
+            & .feature__img2{
+                width: 90px;
+                height: 80px;
+            }
+            & .feature__img3{
+                width: 60px;
+                height: 84px;
+            }
+            & .feature__img4{
+                width: 71px;
+                height: 71px;
+            }
+            & .feature__text_wrapper{
+                margin-top: 27px;
+                & .feature__tittle{
+                    color: #323232;
+                    font-family: Montserrat;
+                    font-size: 16px;
+                    font-weight: 400;
+                    line-height: 16px;
+                    text-align: center;
+                }
+                & .feature__text{
+                    margin-top: 14px;
+                    color: #848E97;
+                    text-align: center;
+                    font-family: Lato;
+                    font-size: 14px;
+                    font-weight: 400;
+                    line-height: 21px;
+                }
+            }
+        }
+    }
+    & .features__img_wrapper{
+        margin-top: 64px;
+        margin-right: -10px;
+        & .features__img{
+            height: 381px;
+            width: 100%;
+            object-fit: cover;
+            object-position: left;
+        }
+    }
+}
+
+// section Fork Subscription Pricing
+
+.pricing__wrapper{
+    background-image: url(../../img/base-3.png);
+    background-size: cover;
+    & .pricing__tittle{
+        // width: 320px;
+        margin: 0 auto;
+        padding-top: 14px;
+        color: #FFF;
+        text-align: center;
+        font-family: Montserrat;
+        font-size: 28px;
+        font-weight: 700;
+        line-height: 42px;
+    }
+    & .pricing__card_wrapper{
+        flex-wrap: wrap;
+        margin-top: 32px;
+        padding-bottom: 10px;
+        gap: 18px;
+        & .pricing__card{
+            width: 257px;
+            height: 457px;
+            margin: 0 auto;
+            position: relative;
+            background-color: rgba($color: #ffffff, $alpha: 0.11);
+            & .pricing__card_tittle{
+                color: #FFF;
+                background-color: rgba($color: #ffffff, $alpha: 0.06);
+                padding: 36px 0;
+                text-align: center;
+                font-family: Montserrat;
+                font-size: 24px;
+                font-weight: 400;
+                line-height: 24px;
+                text-transform: uppercase;
+            }
+            & .pricing__card_price{
+                margin-top: 30px;
+                color: #FFF;
+                text-align: center;
+                font-family: Montserrat;
+                font-size: 14px;
+                font-weight: 400;
+                line-height: 16px;
+                text-transform: uppercase;
+                position: relative;
+                & span{
+                    font-size: 60px;
+                    line-height: 62px;
+                    display: block;
+                    & .price-number{
+                        font-weight: 700;
+                        display: inline;
+                    }
+                }
+            }
+            & .pricing__card_price::after{
+                content: "";
+                width: 60px;
+                height: 5px;  
+                left: 99px;
+                position: absolute;
+                bottom: -38px;
+                background-color: #8D81AC;      
+            }
+            & .pricing__card_include{
+                color: #FFF;
+                margin-top: 73px;
+                text-align: center;
+                font-family: Montserrat;
+                font-size: 16px;
+                font-weight: 400;
+                line-height: 28px;
+            }
+            & .pricing__card_btn{
+                position: absolute;
+                left: 48px;
+                bottom: 37px;
+                width: 163px;
+                height: 45px;
+                border: none;
+                border-radius: 40px;
+                display: block;
+                color: #FFF;
+                font-family: Montserrat;
+                font-size: 15px;
+                font-weight: 400;
+                text-transform: uppercase;
+                cursor: pointer;
+                background-color: rgba($color: #ffffff, $alpha: 0.1);
+            }
+        }
+        & .special-card{
+            width: 299px;
+            height: 560px;
+            background-color: rgba($color: #463048, $alpha: 0.84);
+            & .special-tittle{
+                background-color: rgba($color: #000000, $alpha: 0.11);
+            }
+            & .special-price{
+                & span{
+                    font-size: 82px;
+                    margin-bottom: 16px;
+                }
+            }
+            & .special-price::after{
+                left: 120px;
+            }
+            & .spesial-btn{
+                width: 190px;
+                height: 52px;
+                font-size: 16px;
+                margin-top: 83px;
+            }
+        }
+    }
+}     
+
+// media
+
+@media (min-width: 481px) {
+    .revolutionary-editor_wrapper{
+        margin-bottom: 160px;
+        & .editor__title{
+            font-size: 42px;
+            line-height: 40px;
+        }
+        & .editor__text{
+            width: 100%;
+            font-size: 21px;
+            line-height: 32px;
+        }
+        & .editor__buttons_wrapper{
+            width: 100%;
+            & .button_wrapper{
+                &:last-child{
+                    margin: 0;
+                }
+            }
+        }
+    }
+
+    .aboutFork{
+        &_wrapper{
+            background-image: url("/img/Layer\ 1.png");
+        }
+    }
+
+
+    .features__wrapper{
+        & .features__tittle{
+            font-size: 42px;
+        }
+        & .features__content_wrapper{
+            margin-top: 52px;
+            gap: 60px;
+            & .feature__wrapper{
+                width: 100%;
+                display: flex;
+                align-items: center;
+                gap: 23px;
+                & .feature__img1{
+                    margin-left: 30px;
+                    margin-right: 21px;
+                }
+                & .feature__img2{
+                    margin-left: 27px;
+                    margin-right: 44px;
+                }
+                & .feature__img3{
+                    margin-left: 44px;
+                    margin-right: 57px;
+                }
+                & .feature__img4{
+                    margin-left: 37px;
+                    margin-right: 54px;
+                }
+                & .feature__text_wrapper{
+                    margin: 0;
+                    & .feature__tittle, .feature__text{
+                        text-align: left;
+                    }
+                }
+            }
+        }
+        & .features__img_wrapper{
+            margin-left: 58px;
+            margin-top: 76px;
+            margin-right: -10px;
+            overflow: hidden;
+            & .features__img{
+                height: auto;
+                padding: 0;
+            }
+        }
+    }
+
+    .pricing__wrapper{
+        background-image: url(../../img/Layer2.png);
+        & .pricing__tittle{
+            width: 100%;
+            font-size: 42px;
+        }
+        & .pricing__card_wrapper{
+            width: 460px;
+            margin: 0 auto;
+            margin-top: 39px;
+            padding-bottom: 10px;
+        }
+    }
+}
+
+@media (min-width: 594px) {
+    .pricing__wrapper{
+        & .pricing__card_wrapper{
+            width: 574px;
+            justify-content: center;
+            padding-bottom: 94px;
+            & .pricing__card{
+                margin: 0;
+                &:first-child{
+                    margin: 0 0 0 39px;
+                }
+                &:last-child{
+                    margin: 41px 0 0 0;
+                }
+            }
+            & .special-card{
+                margin: 0;
+            }
+        }
+    }
+}
+
+@media (min-width : 650px){
+    .aboutFork{
+        &_wrapper{
+            background-image: url("/img/Layer\ 1.png");
+            height: 882px;
+        }
+        &_deck{
+            padding-top: 85px;
+            flex-wrap: wrap;
+            flex-direction: row;
+            justify-content: space-around;
+            &_card_6{
+                height: 150px;
+            }
+        }
+        &_paragraph{
+            width: 90%;
+            max-width: 887px;
+        }
+        &_title{
+            padding-top: 65px;
+            font-size: 42px;
+        }
+    }
+}
+@media (min-width : 736px){
+    .aboutFork_deck{
+        gap: 86px;
+        &_card{
+            padding: 0;
+            width: 315px;
+            &_1{
+                height: 140px;
+            }
+            &_2{
+                height: 140px;
+            }
+            &_3{
+                height: 148px;
+            }
+            &_4{
+                height: 148px;
+            }
+            &_5{
+                height: 123px;
+            }
+            &_6{
+                height: 123px;
+            }
+        }
+    }
+}
+
+// desktop
+
+@media (min-width: 993px){
+    .features__wrapper{
+        & .features__tittle{
+            font-size: 35px;
+            width: 459px;
+        }
+    }
+    .aboutFork{
+        &_title{
+            font-size: 48px;
+        }
+        &_wrapper{
+            height: 786px;
+            background-image: url("/img/testmonials-bg\ 1.png");
+        }
+        &_deck{
+            gap: 0;
+            row-gap: 112px;
+            &_card{
+                padding: 0;
+                width: 315px;
+                &_1{
+                    height: 148px;
+                }
+                &_2{
+                    height: 148px;
+                }
+                &_3{
+                    height: 148px;
+                }
+                &_4{
+                    height: 146px;
+                }
+                &_5{
+                    height: 146px;
+                }
+                &_6{
+                    height: 146px;
+                }
+            }
+        }
+        &_paragraph{
+            padding-top: 118px;
+        }
+    }
+}
+
+@media (min-width: 995px) {
+    .revolutionary-editor_wrapper{
+        margin-bottom: 70px;
+        & .editor__title{
+            font-size: 54px;
+            margin-bottom: 35px;
+        }
+        & .editor__text{
+            width: 861px;
+        }
+    }
+
+    .features__wrapper{
+        margin: 0 auto;
+        background-color: #F4F4F4;
+        padding-bottom: 33px;
+        overflow: hidden;
+        margin-right: 0;
+        & .features__wrapper_content{
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: minmax(auto, 515px) minmax(665px, 463px);
+            grid-template-rows: auto;
+            justify-content: center;
+            justify-items: stretch;
+            & .features__tittle{
+                grid-row: span 1/2;
+                grid-column: 2;
+                padding-top: 100px;
+                margin-left: 10px;
+                width: 425px;
+                position: relative;
+                left: 82px;
+            }
+            & .features__content_wrapper{
+                grid-row: span 1/2;
+                grid-column: 1;
+                width: 100%;
+                margin-top: 103px;
+                gap: 41px;
+                & .feature__wrapper{
+                    width: 100%;
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 23px;
+                    & .feature__text_wrapper{
+                        margin: 0;
+                        & .feature__tittle, .feature__text{
+                            text-align: left;
+                        }
+                    }
+                }
+            }
+            & .features__img_wrapper{
+                grid-row: span 1/2;
+                grid-column: 2;
+                margin: 0;
+                margin-top: 138px;
+                margin-right: -11px;
+                margin-left: 35px;
+                height: 519px;
+                width: 700px;
+                & .features__img{
+                    padding: 0;
+                    height: auto;
+                }
+            }
+        }
+        
+    }
+    .special-margin{
+        margin: 0;
+        margin-left: 90px;
+    }
+
+
+    .pricing__wrapper_bcg{
+        & .pricing__wrapper{
+            .pricing__tittle{
+                padding-top: 83px;
+            }
+        }
+    }
+}
+
+@media (min-width: 1185px){
+    .pricing__wrapper_bcg {
+        background-image: url(../../img/Layer21.png);
+        & .pricing__wrapper {
+            background-image: none;
+            & .pricing__tittle {
+                font-size: 48px;
+            }
+            & .pricing__card_wrapper {
+                width: 100%;
+                align-items: center;
+                margin-top: 61px;
+                & .pricing__card {
+                    &:first-child {
+                        margin: 0;
+                    }
+                    &:last-child {
+                        margin: 0;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (min-width: 1350px){
+    .features__wrapper{
+        overflow: visible;
+    }
+}

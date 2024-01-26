@@ -1,0 +1,22 @@
+*{
+    padding: 0;
+}
+body{
+    max-width: 1350px;
+    margin: 0 auto;
+}
+button {
+    cursor: pointer;
+}
+.container{
+    width: 320px;
+    margin: 0 auto;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+@media (min-width : 321px){
+    .container{
+        width: 100%;
+        max-width: 1200px;
+    }
+}
