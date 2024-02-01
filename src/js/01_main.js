@@ -79,7 +79,7 @@ class CreateVisitModal {
         console.log(createVisit.visit);
         this.closeVisitModal();
         //виклик функції для створення картки та відправлення на сервер------
-
+        
         //-------------------------------------------------------------------
     }
 
@@ -108,3 +108,164 @@ class CreateVisitModal {
 //тестова строчка допоки не буде кнопки для створення візиту--------
 const createVisit = new CreateVisitModal();
 //------------------------------------------------------------------
+
+// картка візиту
+class VisitCard {
+    constructor(visitData) {
+        this.visitData = visitData;
+        this.isExpanded = false;
+        this.isEditing = false;
+        this.createCardElement();
+        this.render();
+    }
+
+    createCardElement() {
+        this.cardElement = document.createElement('div');
+        this.cardElement.classList.add('visitCard');
+
+        // Додати інформацію, яка завжди видима
+        this.cardElement.innerHTML = `
+            <div class="visibleInfo">
+                <p>ПІБ: ${this.visitData.fullName}</p>
+                <p>Лікар: ${this.visitData.doctorName}</p>
+            </div>
+            <div class="additionalInfoContainer"></div>
+            <button class="showMoreBtn">Показати більше</button>
+            <button class="editBtn">Редагувати</button>
+            <button class="saveChangesBtn" style="display: none;">Зберегти зміни</button>
+            <span class="deleteIcon">❌</span>
+        `;
+
+        // Додати обробники подій
+        this.cardElement.querySelector('.showMoreBtn').addEventListener('click', () => this.toggleExpanded());
+        this.cardElement.querySelector('.editBtn').addEventListener('click', () => this.toggleEditing());
+        this.cardElement.querySelector('.saveChangesBtn').addEventListener('click', () => this.saveChanges());
+        this.cardElement.querySelector('.deleteIcon').addEventListener('click', () => this.deleteCard());
+    }
+
+    render() {
+        const additionalInfoContainer = this.cardElement.querySelector('.additionalInfoContainer');
+        additionalInfoContainer.innerHTML = ''; // Очищаємо контейнер перед відображенням
+
+        if (this.isExpanded) {
+            Object.keys(this.visitData).forEach(key => {
+                additionalInfoContainer.innerHTML += `<p>${key}: ${this.visitData[key]}</p>`;
+            });
+        }
+
+        document.querySelector('.visits-list').appendChild(this.cardElement);
+
+        this.cardElement.querySelector('.showMoreBtn').innerText = this.isExpanded ? 'Показати менше' : 'Показати більше';
+    }
+
+    toggleExpanded() {
+        this.isExpanded = !this.isExpanded;
+        this.render();
+    }
+
+    toggleEditing() {
+        this.isEditing = !this.isEditing;
+        const additionalInfoContainer = this.cardElement.querySelector('.additionalInfoContainer');
+        const visibleInfoContainer = this.cardElement.querySelector('.visibleInfo');
+
+        if (this.isEditing) {
+            visibleInfoContainer.style.display = 'none';
+            additionalInfoContainer.style.display = 'block';
+        } else {
+            additionalInfoContainer.style.display = 'none';
+            visibleInfoContainer.style.display = 'block';
+
+            visibleInfoContainer.innerHTML = `
+                <p>ПІБ: ${this.visitData.fullName}</p>
+                <p>Лікар: ${this.visitData.doctorName}</p>
+            `;
+        }
+
+        this.renderEditForm();
+    }
+
+    renderEditForm() {
+        const additionalInfoContainer = this.cardElement.querySelector('.additionalInfoContainer');
+        additionalInfoContainer.innerHTML = `
+            <label for="editedFullName">ПІБ:</label>
+            <input type="text" id="editedFullName" value="${this.visitData.fullName}">
+            <label for="editedSelectedDoctor">Лікар:</label>
+            <input type="text" id="editedSelectedDoctor" value="${this.visitData.doctorName}">
+            <label for="editedPurpose">Мета:</label>
+            <input type="text" id="editedPurpose" value="${this.visitData.purpose}">
+            <!-- Додайте інші поля редагування, використовуючи this.visitData -->
+        `;
+    }
+
+    saveChanges() {
+        this.visitData.fullName = document.getElementById('editedFullName').value;
+        this.visitData.doctorName = document.getElementById('editedSelectedDoctor').value;
+        this.visitData.purpose = document.getElementById('editedPurpose').value;
+        // Оновіть інші поля, якщо необхідно
+        // ...
+
+        const additionalInfoContainer = this.cardElement.querySelector('.additionalInfoContainer');
+        const visibleInfoContainer = this.cardElement.querySelector('.visibleInfo');
+
+        additionalInfoContainer.style.display = 'none';
+        visibleInfoContainer.style.display = 'block';
+
+        visibleInfoContainer.innerHTML = `
+            <p>ПІБ: ${this.visitData.fullName}</p>
+            <p>Лікар: ${this.visitData.doctorName}</p>
+        `;
+
+        this.cardElement.querySelector('.editBtn').style.display = 'inline-block';
+        this.cardElement.querySelector('.saveChangesBtn').style.display = 'none';
+    }
+
+    deleteCard() {
+        this.cardElement.remove();
+    }
+}
+
+class VisitCardManager {
+    constructor() {
+        this.visitsList = document.querySelector('.visits-list');
+    }
+
+    addVisitCard(visitData) {
+        const visitCard = new VisitCard(visitData);
+        this.visitsList.appendChild(visitCard.cardElement);
+    }
+}
+
+const visitCardManager = new VisitCardManager();
+
+// Приклад данних для кількох візитів
+const visitsData = [
+    { 
+        doctorName: 'Доктор Іванова',
+        purpose: 'Регулярний огляд',
+        description: 'Аналіз крові та артеріального тиску',
+        urgency: 'Пріоритетна',
+        fullName: 'Петренко Іван Петрович',
+        bloodPressure: '120/80',
+        bmi: 24.5,
+        cardiovascularDiseases: 'Немає',
+        age: 35,
+        lastVisitDate: '2023-01-09'
+    },
+    { 
+        doctorName: 'Доктор Іванова',
+        purpose: 'Регулярний огляд',
+        description: 'Аналіз крові та артеріального тиску',
+        urgency: 'Пріоритетна',
+        fullName: 'Петренко Іван Петрович',
+        bloodPressure: '120/80',
+        bmi: 24.5,
+        cardiovascularDiseases: 'Немає',
+        age: 35,
+        lastVisitDate: '2023-01-09'
+    },
+    // Додавайте більше об'єктів даних візитів за потреби
+];
+
+visitsData.forEach(visitData => {
+    visitCardManager.addVisitCard(visitData);
+});
