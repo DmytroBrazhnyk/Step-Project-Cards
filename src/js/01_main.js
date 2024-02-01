@@ -79,7 +79,7 @@ class CreateVisitModal {
         console.log(createVisit.visit);
         this.closeVisitModal();
         //виклик функції для створення картки та відправлення на сервер------
-
+        
         //-------------------------------------------------------------------
     }
 
@@ -108,3 +108,128 @@ class CreateVisitModal {
 //тестова строчка допоки не буде кнопки для створення візиту--------
 const createVisit = new CreateVisitModal();
 //------------------------------------------------------------------
+
+// картка візиту
+class VisitCard {
+    constructor(visitData) {
+        this.visitData = visitData;
+        this.isExpanded = false;
+        this.isEditing = false;
+        this.createCardElement();
+        this.render();
+    }
+
+    createCardElement() {
+        this.cardElement = document.createElement('div');
+        this.cardElement.classList.add('visitCard');
+
+        // Додати інформацію, яка завжди видима
+        this.cardElement.innerHTML = `
+            <p>ПІБ: ${this.visitData.fullName}</p>
+            <p>Лікар: ${this.visitData.doctorName}</p>
+            <div class="additionalInfoContainer"></div>
+            <button class="showMoreBtn">Показати більше</button>
+            <button class="editBtn">Редагувати</button>
+            <span class="deleteIcon">❌</span>
+        `;
+
+        // Додати обробники подій
+        this.cardElement.querySelector('.showMoreBtn').addEventListener('click', () => this.toggleExpanded());
+        this.cardElement.querySelector('.editBtn').addEventListener('click', () => this.toggleEditing());
+        this.cardElement.querySelector('.deleteIcon').addEventListener('click', () => this.deleteCard());
+    }
+
+    render() {
+        // Оновити вміст картки залежно від стану
+        const additionalInfoContainer = this.cardElement.querySelector('.additionalInfoContainer');
+
+        if (this.isExpanded) {
+            // Додати решту інформації в додатковий контейнер
+            Object.keys(this.visitData).forEach(key => {
+                if (key !== 'fullName' && key !== 'doctorName') {
+                    additionalInfoContainer.innerHTML += `<p>${key}: ${this.visitData[key]}</p>`;
+                }
+            });
+        } else {
+            additionalInfoContainer.innerHTML = ''; // Очистити додатковий контейнер
+        }
+
+        // Оновити вміст картки
+        document.querySelector('.visits-list').appendChild(this.cardElement);
+
+        this.cardElement.querySelector('.showMoreBtn').innerText = this.isExpanded ? 'Показати менше' : 'Показати більше';
+    }
+
+    toggleExpanded() {
+        this.isExpanded = !this.isExpanded;
+        this.render();
+    }
+
+    toggleEditing() {
+        this.isEditing = !this.isEditing;
+
+        if (this.isEditing) {
+            // При переході до режиму редагування, ви можете вивести форму для редагування
+            // Наприклад, викликати метод для виведення форми редагування
+            this.renderEditForm();
+        } else {
+            // При виході з режиму редагування, оновіть вміст картки та збережіть редаговані дані
+            this.updateVisitDataFromForm();
+            this.render();
+        }
+    }
+
+    renderEditForm() {
+        const additionalInfoContainer = this.cardElement.querySelector('.additionalInfoContainer');
+        additionalInfoContainer.innerHTML = `
+            <label for="editedFullName">ПІБ:</label>
+            <input type="text" id="editedFullName" value="${this.visitData.fullName}">
+            <label for="editedSelectedDoctor">Лікар:</label>
+            <input type="text" id="editedSelectedDoctor" value="${this.visitData.doctorName}">
+            <!-- Додайте інші поля редагування, використовуючи this.visitData -->
+        `;
+    }
+
+    updateVisitDataFromForm() {
+        // Оновіть дані візиту на основі даних у формі редагування
+        this.visitData.fullName = document.getElementById('editedFullName').value;
+        this.visitData.selectedDoctor = document.getElementById('editedSelectedDoctor').value;
+        // Оновіть інші поля, якщо необхідно
+        // ...
+    }
+
+    deleteCard() {
+        // Логіка видалення картки, наприклад, зображення контейнера
+        this.cardElement.remove();
+    }
+}
+
+function DoctorVisit(doctorName, purpose, description, urgency, fullName, bloodPressure, bmi, cardiovascularDiseases, age, lastVisitDate) {
+    this.doctorName = doctorName;
+    this.purpose = purpose;
+    this.description = description;
+    this.urgency = urgency;
+    this.fullName = fullName;
+    this.bloodPressure = bloodPressure;
+    this.bmi = bmi;
+    this.cardiovascularDiseases = cardiovascularDiseases;
+    this.age = age;
+    this.lastVisitDate = lastVisitDate;
+}
+
+// Приклад створення об'єкту
+const doctorVisitObject = new DoctorVisit(
+    'Доктор Іванова',
+    'Регулярний огляд',
+    'Аналіз крові та артеріального тиску',
+    'Пріоритетна',
+    'Петренко Іван Петрович',
+    '120/80',
+    24.5,
+    'Немає',
+    35,
+    '2023-01-09'
+);
+
+// Приклад створення об'єкту VisitCard на основі doctorVisitObject
+const visitCard = new VisitCard(doctorVisitObject);
