@@ -29,6 +29,7 @@
     width: 600px;
     min-height: 200px;
     border: 2px solid black;
+    background: lightblue;
     .modal-content{
         padding: 20px;
         #fieldsContainer{
@@ -56,6 +57,9 @@
     border: 2px solid black;
     max-width: 90%;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     p{
         margin: 5px;
     }
@@ -68,4 +72,14 @@
         right: 10px;
         cursor: pointer;
     }
+    &.buttonsContainer{
+        display: flex;
+    }
+}
+.additionalInfoContainer {
+    border: 2px solid black;
+    display: none;
+}
+.active{
+    display: block;
 }
