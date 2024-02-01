@@ -1,0 +1,253 @@
+body {
+    background-image: url("https://kartinkin.net/uploads/posts/2022-03/1646786311_1-kartinkin-net-p-kartinki-na-meditsinskuyu-temu-dlya-prezen-1.jpg");
+    background-size: cover;
+    background-position: center;
+}
+
+
+
+.section {
+    background-color: rgba(0, 59, 70, 0.5);
+    
+    max-width: 1000px;
+    margin: 0 auto 10px auto;
+    padding: 30px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+
+}
+
+.logo {
+
+    height: 70px;
+    width: 75px;
+    background-image: url(../img/logo.png);
+    background-size: contain;
+    margin-left: 50px;
+    
+}
+
+.header button {
+    text-transform: uppercase;
+    font-weight: 500;
+    border: 3px solid #c4dfe6;
+    background: white;
+}
+
+
+button {
+    cursor: pointer;
+    padding: 10px 30px;
+    border-radius: 5px;
+}
+
+button:hover {
+    color: #57686c;
+}
+
+
+/*MODALS*/
+/*LOGIN*/
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.logBtn {
+    text-transform: uppercase;
+    font-weight: 500;
+    border: 3px solid #c4dfe6;
+    background: white;
+    margin: 5px 0;
+}
+
+.login-form input {
+    border: 1px solid #c4dfe6;
+    margin: 5px 0;
+}
+
+.login-form input:focus {
+    outline: none;
+    border: 2px solid #b2cbd0;
+}
+
+
+/*CREATE*/
+
+
+
+/*--MAIN--*/
+
+.block-header {
+    margin: 20px 0;
+    color: white;
+    font-size: 36px;
+    font-weight: 700;
+    text-shadow: 0 0 10px #080a0a, 0 0 10px #08174c;
+}
+
+
+/*FILTERS*/
+
+.wrap-filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+    padding: 5px;
+
+}
+
+.filter label{
+    /* width: 30%; */
+    /* background-color: white; */
+    /* padding: 15px; */
+    margin-bottom: 0;
+
+}
+.input, .select {
+    width: 250px;
+    height: 40px;
+    text-align: center;
+
+}
+/**/
+.empty {
+    color: white;
+    text-align: center;
+    font-size: 24px;
+}
+
+/*CARDS*/
+
+.wrap-cards {
+    display: flex;
+    flex-wrap: wrap;
+   justify-content: space-around;
+
+}
+
+.card {
+    background-color: rgba(255, 255, 255, 0.5);
+    /* border: 1px solid #07575b; */
+    border-radius: 20px !important; 
+    /* width: 30%; */
+    /*padding: 15px;*/
+    font-size: 18px;
+    line-height: 20px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.card button {
+    border: none;
+    margin: 5px 5px 0 0;
+    background: #65919c;
+    width: 100%;
+
+}
+
+.card-header {
+    padding-right: 0;
+    border-radius: 20px;
+}
+
+.icon-delete {
+    position: absolute;
+    right: 7px;
+    top: 7px;
+    cursor: pointer;
+}
+
+.footer-info {
+    padding: 12px 20px;
+    position: absolute;
+    top: 217px;
+    background-color: #E9EDEF;
+    display: none;
+}
+
+.footer-info.footer-info_active {
+    display: block;
+    width: 100%;
+    z-index: 1;
+    border: 1px solid #717171;
+    border-radius: 10px;
+}
+
+.info_delete {
+    position: absolute;
+    right: 7px;
+    top: 7px;
+    cursor: pointer;
+}
+
+
+/*FOOTER*/
+
+.footer-title {
+    text-align: center;
+    color: gray;
+}
+
+
+/**  Вікно "Створити Візит"*/
+
+.modal-form {
+    position: fixed;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    z-index: 1;
+    background-color: bisque;
+    padding: 50px;
+}
+
+.modal-form input {
+    display: block;
+    margin: 20px;
+}
+
+.modal-backdrop {
+    opacity: 0.5;
+}
+
+.doctor-name {
+    display: flex;
+    justify-content: center;
+}
+
+.doctors {
+    display: inline-block;
+    padding-top: 12px;
+}
+
+.doctor-name .btn-doctor {
+    margin: 0 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #0FC57C;
+    color: #FFFFFF;
+}
+
+.colored {
+    font-weight: 700;
+
+}
+
+/* ____ */
+
+.active {
+    display: block;
+}
+
+.disactive {
+    display: none;
+}
