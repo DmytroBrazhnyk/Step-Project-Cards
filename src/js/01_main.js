@@ -278,6 +278,7 @@ class Card {
         this.card = this.createCard();
         this.visitsListSection = document.querySelector('.visits-list');
         this.additionalInfoContainer = this.card.querySelector('.additionalInfoContainer');
+        this.btnContainer = this.card.querySelector(".buttonsContainer")
     }
 
     createCard() {
@@ -344,7 +345,8 @@ class Card {
         showMoreBtn.innerText = this.additionalInfoContainer.classList.contains("active") ? "Згорнути" : "Показати більше";
     }
     redactCard(){
-
+        this.additionalInfoContainer.classList.add("hiden")
+        this.btnContainer.classList.add("hiden")
     }
 //---------------------------------------------------------------------------
     addToVisitsList() {
