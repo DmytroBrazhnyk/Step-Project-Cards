@@ -143,19 +143,36 @@ class VisitCard {
         this.cardElement.querySelector('.deleteIcon').addEventListener('click', () => this.deleteCard());
     }
 
+    updateShowMoreButtonOnEditing() {
+        const showMoreButton = this.cardElement.querySelector('.showMoreBtn');
+        if (showMoreButton) {
+            showMoreButton.disabled = this.isEditing;
+        }
+    }
+
     render() {
         const additionalInfoContainer = this.cardElement.querySelector('.additionalInfoContainer');
-        additionalInfoContainer.innerHTML = ''; // Очищаємо контейнер перед відображенням
+        additionalInfoContainer.innerHTML = '';
 
-        if (this.isExpanded) {
+        if (this.isExpanded && !this.isEditing) {
             Object.keys(this.visitData).forEach(key => {
-                additionalInfoContainer.innerHTML += `<p>${key}: ${this.visitData[key]}</p>`;
+                const translatedKey = translations[key] || key;
+
+                if (key === 'urgency' && !this.isEditing) {
+                    additionalInfoContainer.innerHTML += `
+                        <p>${translatedKey}: ${this.visitData[key]}</p>
+                    `;
+                } else if (key !== 'doctorName') {
+                    additionalInfoContainer.innerHTML += `<p>${translatedKey}: ${this.visitData[key]}</p>`;
+                }
             });
         }
 
         document.querySelector('.visits-list').appendChild(this.cardElement);
 
-        this.cardElement.querySelector('.showMoreBtn').innerText = this.isExpanded ? 'Показати менше' : 'Показати більше';
+        const showMoreBtn = this.cardElement.querySelector('.showMoreBtn');
+        showMoreBtn.disabled = this.isEditing;
+        showMoreBtn.innerText = this.isExpanded ? 'Приховати' : 'Показати більше';
     }
 
     toggleExpanded() {
@@ -165,58 +182,111 @@ class VisitCard {
 
     toggleEditing() {
         this.isEditing = !this.isEditing;
+    
+        if (this.isEditing) {
+            this.displayEditForm();
+            this.cardElement.querySelector('.showMoreBtn').disabled = true;
+        } else {
+            this.saveChanges();
+            this.hideEditForm();
+            this.cardElement.querySelector('.showMoreBtn').disabled = false;
+        }
+    
+        this.render();
+        this.updateShowMoreButtonOnEditing();
+    }
+
+    displayEditForm(visitData) {
         const additionalInfoContainer = this.cardElement.querySelector('.additionalInfoContainer');
         const visibleInfoContainer = this.cardElement.querySelector('.visibleInfo');
-
-        if (this.isEditing) {
-            visibleInfoContainer.style.display = 'none';
-            additionalInfoContainer.style.display = 'block';
-        } else {
-            additionalInfoContainer.style.display = 'none';
-            visibleInfoContainer.style.display = 'block';
-
-            visibleInfoContainer.innerHTML = `
-                <p>ПІБ: ${this.visitData.fullName}</p>
-                <p>Лікар: ${this.visitData.doctorName}</p>
-            `;
-        }
-
+    
+        visibleInfoContainer.style.display = 'none';
+        additionalInfoContainer.style.display = 'block';
+    
+        // Встановлюємо значення visitData для використання у формі редагування
+        this.visitData = visitData;
+    
         this.renderEditForm();
+    }
+
+    hideEditForm() {
+        const additionalInfoContainer = this.cardElement.querySelector('.additionalInfoContainer');
+        const visibleInfoContainer = this.cardElement.querySelector('.visibleInfo');
+    
+        additionalInfoContainer.style.display = 'none';
+        visibleInfoContainer.style.display = 'block';
+    
+        this.cardElement.querySelector('.editBtn').style.display = 'inline-block';
+        this.cardElement.querySelector('.saveChangesBtn').style.display = 'none';
+    
+        if (this.isExpanded) {
+            additionalInfoContainer.style.display = 'block';
+        }
+    
+        this.render();
+        this.updateShowMoreButtonOnEditing();
     }
 
     renderEditForm() {
         const additionalInfoContainer = this.cardElement.querySelector('.additionalInfoContainer');
-        additionalInfoContainer.innerHTML = `
-            <label for="editedFullName">ПІБ:</label>
-            <input type="text" id="editedFullName" value="${this.visitData.fullName}">
-            <label for="editedSelectedDoctor">Лікар:</label>
-            <input type="text" id="editedSelectedDoctor" value="${this.visitData.doctorName}">
-            <label for="editedPurpose">Мета:</label>
-            <input type="text" id="editedPurpose" value="${this.visitData.purpose}">
-            <!-- Додайте інші поля редагування, використовуючи this.visitData -->
-        `;
+        additionalInfoContainer.innerHTML = '<div class="editForm">';
+    
+        Object.keys(this.visitData).forEach(key => {
+            if (key !== 'doctorName') {
+                const translatedKey = translations[key] || key;
+                if (key === 'urgency') {
+                    // Додайте дропдаун для "Терміновості"
+                    additionalInfoContainer.innerHTML += `
+                        <div>
+                            <label for="edited${key}">${translatedKey}:</label>
+                            <select id="edited${key}">
+                                ${urgencyOptions.map(option => `<option value="${option}" ${this.visitData[key] === option ? 'selected' : ''}>${option}</option>`).join('')}
+                            </select>
+                        </div>
+                    `;
+                } else {
+                    // Звичайний ввід для інших полів
+                    additionalInfoContainer.innerHTML += `
+                        <div>
+                            <label for="edited${key}">${translatedKey}:</label>
+                            <input type="text" id="edited${key}" value="${this.visitData[key]}">
+                        </div>
+                    `;
+                }
+            }
+        });
+    
+        additionalInfoContainer.innerHTML += '</div>';
+    
+        this.cardElement.querySelector('.editBtn').style.display = 'none';
+        this.cardElement.querySelector('.saveChangesBtn').style.display = 'inline-block';
+    
+        this.cardElement.querySelector('.saveChangesBtn').addEventListener('click', () => this.saveChanges());
+    }
+
+    updateVisitData() {
+        const additionalInfoContainer = this.cardElement.querySelector('.additionalInfoContainer');
+    
+        Object.keys(this.visitData).forEach(key => {
+            if (key !== 'doctorName') {
+                this.visitData[key] = document.getElementById(`edited${key}`).value;
+            }
+        });
+    
+        additionalInfoContainer.innerHTML = '';
+    
+        Object.keys(this.visitData).forEach(key => {
+            additionalInfoContainer.innerHTML += `<p>${key}: ${this.visitData[key]}</p>`;
+        });
+    
+        this.render();
     }
 
     saveChanges() {
-        this.visitData.fullName = document.getElementById('editedFullName').value;
-        this.visitData.doctorName = document.getElementById('editedSelectedDoctor').value;
-        this.visitData.purpose = document.getElementById('editedPurpose').value;
-        // Оновіть інші поля, якщо необхідно
-        // ...
-
-        const additionalInfoContainer = this.cardElement.querySelector('.additionalInfoContainer');
-        const visibleInfoContainer = this.cardElement.querySelector('.visibleInfo');
-
-        additionalInfoContainer.style.display = 'none';
-        visibleInfoContainer.style.display = 'block';
-
-        visibleInfoContainer.innerHTML = `
-            <p>ПІБ: ${this.visitData.fullName}</p>
-            <p>Лікар: ${this.visitData.doctorName}</p>
-        `;
-
-        this.cardElement.querySelector('.editBtn').style.display = 'inline-block';
-        this.cardElement.querySelector('.saveChangesBtn').style.display = 'none';
+        this.updateVisitData();
+        // this.hideEditForm();
+        this.updateShowMoreButtonOnEditing();
+        this.render();
     }
 
     deleteCard() {
@@ -232,10 +302,28 @@ class VisitCardManager {
     addVisitCard(visitData) {
         const visitCard = new VisitCard(visitData);
         this.visitsList.appendChild(visitCard.cardElement);
+    
+        // Додайте обробник подій для кнопки "Редагувати"
+        visitCard.cardElement.querySelector('.editBtn').addEventListener('click', () => visitCard.displayEditForm(visitData));
     }
 }
 
 const visitCardManager = new VisitCardManager();
+
+const translations = {
+    doctorName: 'Лікар',
+    purpose: 'Мета',
+    description: 'Опис',
+    urgency: 'Терміновість',
+    fullName: 'ПІБ',
+    bloodPressure: 'Тиск',
+    bmi: 'ІМТ',
+    cardiovascularDiseases: 'Кардіоваскулярні захворювання',
+    age: 'Вік',
+    lastVisitDate: 'Дата останнього візиту'
+};
+
+const urgencyOptions = ['Висока', 'Середня', 'Низька'];
 
 // Приклад данних для кількох візитів
 const visitsData = [
@@ -251,18 +339,18 @@ const visitsData = [
         age: 35,
         lastVisitDate: '2023-01-09'
     },
-    { 
-        doctorName: 'Доктор Іванова',
-        purpose: 'Регулярний огляд',
-        description: 'Аналіз крові та артеріального тиску',
-        urgency: 'Пріоритетна',
-        fullName: 'Петренко Іван Петрович',
-        bloodPressure: '120/80',
-        bmi: 24.5,
-        cardiovascularDiseases: 'Немає',
-        age: 35,
-        lastVisitDate: '2023-01-09'
-    },
+    // { 
+    //     doctorName: 'Доктор Іванова',
+    //     purpose: 'Регулярний огляд',
+    //     description: 'Аналіз крові та артеріального тиску',
+    //     urgency: 'Пріоритетна',
+    //     fullName: 'Петренко Іван Петрович',
+    //     bloodPressure: '120/80',
+    //     bmi: 24.5,
+    //     cardiovascularDiseases: 'Немає',
+    //     age: 35,
+    //     lastVisitDate: '2023-01-09'
+    // },
     // Додавайте більше об'єктів даних візитів за потреби
 ];
 
