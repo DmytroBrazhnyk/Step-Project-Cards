@@ -110,168 +110,6 @@ class CreateVisitModal {
 const createVisit = new CreateVisitModal();
 //------------------------------------------------------------------
 //----------------------------------------------------------------------------------------
-// картка візиту
-// class VisitCard {
-//     constructor(visitData) {
-//         this.visitData = visitData;
-//         this.isExpanded = false;
-//         this.isEditing = false;
-//         this.createCardElement();
-//         this.render();
-//     }
-
-//     createCardElement() {
-//         this.cardElement = document.createElement('div');
-//         this.cardElement.classList.add('visitCard');
-
-//         // Додати інформацію, яка завжди видима
-//         this.cardElement.innerHTML = `
-//             <div class="visibleInfo">
-//                 <p>ПІБ: ${this.visitData.fullName}</p>
-//                 <p>Лікар: ${this.visitData.doctorName}</p>
-//             </div>
-//             <div class="additionalInfoContainer"></div>
-//             <button class="showMoreBtn">Показати більше</button>
-//             <button class="editBtn">Редагувати</button>
-//             <button class="saveChangesBtn" style="display: none;">Зберегти зміни</button>
-//             <span class="deleteIcon">❌</span>
-//         `;
-
-//         // Додати обробники подій
-//         this.cardElement.querySelector('.showMoreBtn').addEventListener('click', () => this.toggleExpanded());
-//         this.cardElement.querySelector('.editBtn').addEventListener('click', () => this.toggleEditing());
-//         this.cardElement.querySelector('.saveChangesBtn').addEventListener('click', () => this.saveChanges());
-//         this.cardElement.querySelector('.deleteIcon').addEventListener('click', () => this.deleteCard());
-//     }
-
-//     render() {
-//         const additionalInfoContainer = this.cardElement.querySelector('.additionalInfoContainer');
-//         additionalInfoContainer.innerHTML = ''; // Очищаємо контейнер перед відображенням
-
-//         if (this.isExpanded) {
-//             Object.keys(this.visitData).forEach(key => {
-//                 additionalInfoContainer.innerHTML += `<p>${key}: ${this.visitData[key]}</p>`;
-//             });
-//         }
-
-//         document.querySelector('.visits-list').appendChild(this.cardElement);
-
-//         this.cardElement.querySelector('.showMoreBtn').innerText = this.isExpanded ? 'Показати менше' : 'Показати більше';
-//     }
-
-//     toggleExpanded() {
-//         this.isExpanded = !this.isExpanded;
-//         this.render();
-//     }
-
-//     toggleEditing() {
-//         this.isEditing = !this.isEditing;
-//         const additionalInfoContainer = this.cardElement.querySelector('.additionalInfoContainer');
-//         const visibleInfoContainer = this.cardElement.querySelector('.visibleInfo');
-
-//         if (this.isEditing) {
-//             visibleInfoContainer.style.display = 'none';
-//             additionalInfoContainer.style.display = 'block';
-//         } else {
-//             additionalInfoContainer.style.display = 'none';
-//             visibleInfoContainer.style.display = 'block';
-
-//             visibleInfoContainer.innerHTML = `
-//                 <p>ПІБ: ${this.visitData.fullName}</p>
-//                 <p>Лікар: ${this.visitData.doctorName}</p>
-//             `;
-//         }
-
-//         this.renderEditForm();
-//     }
-
-//     renderEditForm() {
-//         const additionalInfoContainer = this.cardElement.querySelector('.additionalInfoContainer');
-//         additionalInfoContainer.innerHTML = `
-//             <label for="editedFullName">ПІБ:</label>
-//             <input type="text" id="editedFullName" value="${this.visitData.fullName}">
-//             <label for="editedSelectedDoctor">Лікар:</label>
-//             <input type="text" id="editedSelectedDoctor" value="${this.visitData.doctorName}">
-//             <label for="editedPurpose">Мета:</label>
-//             <input type="text" id="editedPurpose" value="${this.visitData.purpose}">
-//             <!-- Додайте інші поля редагування, використовуючи this.visitData -->
-//         `;
-//     }
-
-//     saveChanges() {
-//         this.visitData.fullName = document.getElementById('editedFullName').value;
-//         this.visitData.doctorName = document.getElementById('editedSelectedDoctor').value;
-//         this.visitData.purpose = document.getElementById('editedPurpose').value;
-//         // Оновіть інші поля, якщо необхідно
-//         // ...
-
-//         const additionalInfoContainer = this.cardElement.querySelector('.additionalInfoContainer');
-//         const visibleInfoContainer = this.cardElement.querySelector('.visibleInfo');
-
-//         additionalInfoContainer.style.display = 'none';
-//         visibleInfoContainer.style.display = 'block';
-
-//         visibleInfoContainer.innerHTML = `
-//             <p>ПІБ: ${this.visitData.fullName}</p>
-//             <p>Лікар: ${this.visitData.doctorName}</p>
-//         `;
-
-//         this.cardElement.querySelector('.editBtn').style.display = 'inline-block';
-//         this.cardElement.querySelector('.saveChangesBtn').style.display = 'none';
-//     }
-
-//     deleteCard() {
-//         this.cardElement.remove();
-//     }
-// }
-
-// class VisitCardManager {
-//     constructor() {
-//         this.visitsList = document.querySelector('.visits-list');
-//     }
-
-//     addVisitCard(visitData) {
-//         const visitCard = new VisitCard(visitData);
-//         this.visitsList.appendChild(visitCard.cardElement);
-//     }
-// }
-
-// const visitCardManager = new VisitCardManager();
-
-// // Приклад данних для кількох візитів
-// const visitsData = [
-//     { 
-//         doctorName: 'Доктор Іванова',
-//         purpose: 'Регулярний огляд',
-//         description: 'Аналіз крові та артеріального тиску',
-//         urgency: 'Пріоритетна',
-//         fullName: 'Петренко Іван Петрович',
-//         bloodPressure: '120/80',
-//         bmi: 24.5,
-//         cardiovascularDiseases: 'Немає',
-//         age: 35,
-//         lastVisitDate: '2023-01-09'
-//     },
-//     { 
-//         doctorName: 'Доктор Іванова',
-//         purpose: 'Регулярний огляд',
-//         description: 'Аналіз крові та артеріального тиску',
-//         urgency: 'Пріоритетна',
-//         fullName: 'Петренко Іван Петрович',
-//         bloodPressure: '120/80',
-//         bmi: 24.5,
-//         cardiovascularDiseases: 'Немає',
-//         age: 35,
-//         lastVisitDate: '2023-01-09'
-//     },
-//     // Додавайте більше об'єктів даних візитів за потреби
-// ];
-
-// visitsData.forEach(visitData => {
-//     visitCardManager.addVisitCard(visitData);
-// });
-
-
 class Card {
     constructor(visitData) {
         this.data = visitData;
@@ -279,6 +117,7 @@ class Card {
         this.visitsListSection = document.querySelector('.visits-list');
         this.additionalInfoContainer = this.card.querySelector('.additionalInfoContainer');
         this.btnContainer = this.card.querySelector(".buttonsContainer")
+        this.modal 
     }
 
     createCard() {
@@ -303,25 +142,13 @@ class Card {
     }
 
     renderAdditionalInfo() {
-        const translations = {
-            doctorName: 'Лікар',
-            purpose: 'Мета візиту',
-            description: 'Короткий опис візиту',
-            urgency: 'Терміновість',
-            fullName: 'ПІБ',
-            pressure: 'Звичайний тиск',
-            bmi: 'Індекс маси тіла',
-            cardiovascularDiseases: 'Перенесені захворювання серцево-судинної системи',
-            age: 'Вік',
-            lastVisitDate: 'Дата останнього відвідування'
-        };
         let additionalInfoHtml = '';
-        for (const key in this.data) {
-            if (key !== 'selectedDoctor' && key !== 'fullName') {
-                const translatedKey = translations[key] || key;
-                additionalInfoHtml += `<p>${translatedKey}: ${this.data[key]}</p>`;
+            for (const key in this.data) {
+                if (key !== 'selectedDoctor' && key !== 'fullName') {
+                    const translatedKey = translations[key] || key;
+                    additionalInfoHtml += `<p>${translatedKey}: ${this.data[key]}</p>`;
+                }
             }
-        }
         return additionalInfoHtml;
     }
 //------------------------кнопки--------------------------------------------
@@ -344,10 +171,81 @@ class Card {
         this.additionalInfoContainer.classList.toggle('active');
         showMoreBtn.innerText = this.additionalInfoContainer.classList.contains("active") ? "Згорнути" : "Показати більше";
     }
-    redactCard(){
-        this.additionalInfoContainer.classList.add("hiden")
-        this.btnContainer.classList.add("hiden")
+    redactCard() {
+        this.additionalInfoContainer.classList.add("hidden");
+        this.btnContainer.classList.add("hidden");
+
+        this.modal = document.createElement('div');
+        this.modal.classList.add('modal');
+        this.modal.innerHTML = `
+            <div class="modal-content">
+                <h2>Редагування даних</h2>
+                ${this.renderEditFields()}
+                <button class="saveBtn">Зберегти</button>
+            </div>
+        `;
+        this.card.append(this.modal)
+
+        const saveBtn = this.modal.querySelector('.saveBtn');
+        saveBtn.addEventListener('click', () => this.saveChanges());
     }
+    renderEditFields() {
+        let editFieldsHtml = '';
+        for (const key in this.data) {
+            if (key !== 'selectedDoctor' && key !== 'fullName') {
+                const translatedKey = translations[key] || key;
+                if (key === 'urgency') {
+                    editFieldsHtml += `
+                        <div class="edit-field">
+                            <label for="${key}">${translatedKey}</label>
+                            <select id="${key}">
+                                <option value="Звичайна" ${this.data[key] === 'Звичайна' ? 'selected' : ''}>Звичайна</option>
+                                <option value="Пріоритетна" ${this.data[key] === 'Пріоритетна' ? 'selected' : ''}>Пріоритетна</option>
+                                <option value="Невідкладна" ${this.data[key] === 'Невідкладна' ? 'selected' : ''}>Невідкладна</option>
+                            </select>
+                        </div>
+                    `;
+                } else {
+                    editFieldsHtml += `
+                        <div class="edit-field">
+                            <label for="${key}">${translatedKey}</label>
+                            <input type="text" id="${key}" value="${this.data[key]}">
+                        </div>
+                    `;
+                }
+            }
+        }
+        return editFieldsHtml;
+    }
+    saveChanges() {
+        const newData = {};
+        
+        for (const key in this.data) {
+            const inputField = document.getElementById(key);
+            if (inputField && inputField.value !== undefined) {
+                newData[key] = inputField.value;
+            }
+        }
+
+        for (const key in newData) {
+            if (this.data.hasOwnProperty(key)) {
+                this.data[key] = newData[key];
+            }
+        }
+        
+        this.modal.remove();
+        console.log(this.data);
+        this.updateAdditionalInfo();
+        this.additionalInfoContainer.classList.remove("hidden");
+        this.btnContainer.classList.remove("hidden");
+    }
+
+    updateAdditionalInfo() {
+        const newAdditionalInfoHtml = this.renderAdditionalInfo();
+        this.additionalInfoContainer.innerHTML = newAdditionalInfoHtml;
+    }
+
+
 //---------------------------------------------------------------------------
     addToVisitsList() {
         this.visitsListSection.appendChild(this.card);
@@ -367,6 +265,18 @@ const testObj ={
             age: 35,
             lastVisitDate: '2023-01-09'
         }
+const translations = {
+            doctorName: 'Лікар',
+            purpose: 'Мета візиту',
+            description: 'Короткий опис візиту',
+            urgency: 'Терміновість',
+            fullName: 'ПІБ',
+            pressure: 'Звичайний тиск',
+            bmi: 'Індекс маси тіла',
+            cardiovascularDiseases: 'Перенесені захворювання серцево-судинної системи',
+            age: 'Вік',
+            lastVisitDate: 'Дата останнього відвідування'
+};
 
         const cardInstance = new Card(testObj);
         cardInstance.addToVisitsList();
