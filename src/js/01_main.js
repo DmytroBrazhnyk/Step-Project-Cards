@@ -39,7 +39,7 @@ class CreateVisitModal {
         if (selectedDoctor === 'cardiologist') {
             this.createInputField('pressure', 'Звичайний тиск:');
             this.createInputField('bmi', 'Індекс маси тіла:');
-            this.createInputField('heartDiseases', 'Перенесені захворювання серцево-судинної системи:');
+            this.createInputField('cardiovascularDiseases', 'Перенесені захворювання серцево-судинної системи:');
             this.createInputField('age', 'Вік:');
         } else if (selectedDoctor === 'dentist') {
             this.createInputField('lastVisitDate', 'Дата останнього відвідування:');
@@ -79,7 +79,8 @@ class CreateVisitModal {
         console.log(createVisit.visit);
         this.closeVisitModal();
         //виклик функції для створення картки та відправлення на сервер------
-        
+        const card = new Card(createVisit.visit);
+        card.addToVisitsList();
         //-------------------------------------------------------------------
     }
 
@@ -110,7 +111,7 @@ const createVisit = new CreateVisitModal();
 //------------------------------------------------------------------
 
 // картка візиту
-class Card {
+class VisitCard {
     constructor(visitData) {
         this.data = visitData;
         this.card = this.createCard();
