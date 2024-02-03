@@ -1,4 +1,14 @@
 const visitContainer = document.querySelector(".visits-list");
+const loginButton = document.getElementById('header-userActions-loginButton');
+loginButton.addEventListener("click", () => new Login());
+let userToken = "";
+
+
+const createCardButton = document.getElementById('header-userActions-createCard');
+createCardButton.addEventListener('click', () => {
+    let createVisit = new CreateVisitModal();
+});
+
 
 class CreateVisitModal {
     constructor() {
@@ -75,13 +85,13 @@ class CreateVisitModal {
         });
 
         this.visit = visitData;
-        
-        console.log(createVisit.visit);
+        console.log(this.visit);
+
         this.closeVisitModal();
-        //виклик функції для створення картки та відправлення на сервер------
-        const card = new Card(createVisit.visit);
+
+        const card = new Card(this.visit);
         card.addToVisitsList();
-        //-------------------------------------------------------------------
+        // треба додати відправлення на сервер 
     }
 
     createInputField(fieldName, label) {
@@ -105,10 +115,8 @@ class CreateVisitModal {
         this.fieldsContainer.appendChild(selectField);
     }
 }
-
 //тестова строчка допоки не буде кнопки для створення візиту--------
-const createVisit = new CreateVisitModal();
-//------------------------------------------------------------------
+// const createVisit = new CreateVisitModal();
 //----------------------------------------------------------------------------------------
 class Card {
     constructor(visitData) {
@@ -251,7 +259,89 @@ class Card {
         this.visitsListSection.appendChild(this.card);
     }
 }
-//-----------------------------------------------------------------------------
+//-------login------------------------------------------------------------
+class Login {
+    constructor() {
+        this.modal = this.createLoginModal();
+        document.body.append(this.modal);
+        this.loginButton = document.getElementById('header-userActions-loginButton');
+        this.loginButton.classList.add("hidden");
+        this.loginEventButton = this.modal.querySelector("#loginBtn");
+        this.errorElement = this.modal.querySelector("#error-message"); // Додали елемент для відображення повідомлення про помилку
+        this.loginEventButton.addEventListener('click', () => this.loginEvent());
+    }
+
+    createLoginModal() {
+        const loginModal = document.createElement('div');
+        loginModal.classList.add('loginModal');
+        loginModal.innerHTML = `
+            <label for="email">Email:</label>
+            <input type="email" id="email" />
+            <br />
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" />
+            <br />
+            <button id="loginBtn">Увійти</button>
+            <p id="error-message" class="error-message"></p> <!-- Додали елемент для відображення повідомлення про помилку -->
+        `;
+        return loginModal;
+    }
+
+    loginEvent() {
+        const emailInput = this.modal.querySelector("#email");
+        const passwordInput = this.modal.querySelector("#password");
+        const email = emailInput.value;
+        const password = passwordInput.value;
+
+        fetch("https://ajax.test-danit.com/api/v2/cards/login", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Неправильні дані');
+            }
+            return response.text();
+        })
+        .then(token => {
+            userToken = token;
+            console.log(userToken);
+
+            createCardButton.classList.add('active');
+
+            this.modal.remove();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            this.clearFields();
+            this.showError('Неправильні дані'); // Вивести повідомлення про помилку
+        });
+    }
+
+    clearFields() {
+        const emailInput = this.modal.querySelector("#email");
+        const passwordInput = this.modal.querySelector("#password");
+        emailInput.value = '';
+        passwordInput.value = '';
+        this.hideError(); 
+    }
+    showError(message) {
+        this.errorElement.textContent = message;
+        this.errorElement.classList.add("visible");
+    }
+    hideError() {
+        this.errorElement.textContent = '';
+        this.errorElement.classList.remove("visible");
+    }
+    displayCards(){
+
+    }
+}
+
+//-----------------------------------------------------------------------
 
 const testObj ={ 
             selectedDoctor: 'Кардіолог',
