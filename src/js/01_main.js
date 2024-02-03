@@ -111,8 +111,11 @@ const createVisit = new CreateVisitModal();
 //------------------------------------------------------------------
 //----------------------------------------------------------------------------------------
 class Card {
+    static currentEditingCard = null;
+
     constructor(visitData) {
         this.data = visitData;
+        this.isEditing = false; //перевірка чи відкрита форма редагування
         this.card = this.createCard();
         this.visitsListSection = document.querySelector('.visits-list');
         this.additionalInfoContainer = this.card.querySelector('.additionalInfoContainer');
@@ -134,8 +137,9 @@ class Card {
             <div class="buttonsContainer">
                 <button class="showMoreBtn">Показати більше</button>
                 <button class="editBtn">Редагувати</button>
-                <button class="deleteIcon">❌</button>
+                
             </div>
+            <button class="deleteIcon">❌</button>
         `;
         cardElement.addEventListener('click', this.handleButtonClick.bind(this));
         return cardElement;
@@ -172,22 +176,25 @@ class Card {
         showMoreBtn.innerText = this.additionalInfoContainer.classList.contains("active") ? "Згорнути" : "Показати більше";
     }
     redactCard() {
-        this.additionalInfoContainer.classList.add("hidden");
-        this.btnContainer.classList.add("hidden");
+        if (!Card.currentEditingCard) { // перевіряємо, чи не редагується вже інша карта
+            Card.currentEditingCard = this; // зберігаємо посилання на поточну редаговану карту
+            this.additionalInfoContainer.classList.add("hidden");
+            this.btnContainer.classList.add("hidden");
 
-        this.modal = document.createElement('div');
-        this.modal.classList.add('modal');
-        this.modal.innerHTML = `
-            <div class="modal-content">
-                <h2>Редагування даних</h2>
-                ${this.renderEditFields()}
-                <button class="saveBtn">Зберегти</button>
-            </div>
-        `;
-        this.card.append(this.modal)
+            this.modal = document.createElement('div');
+            this.modal.classList.add('modal');
+            this.modal.innerHTML = `
+                <div class="modal-content">
+                    <h2>Редагування даних</h2>
+                    ${this.renderEditFields()}
+                    <button class="saveBtn">Зберегти</button>
+                </div>
+            `;
+            this.card.append(this.modal)
 
-        const saveBtn = this.modal.querySelector('.saveBtn');
-        saveBtn.addEventListener('click', () => this.saveChanges());
+            const saveBtn = this.modal.querySelector('.saveBtn');
+            saveBtn.addEventListener('click', () => this.saveChanges());
+        }
     }
     renderEditFields() {
         let editFieldsHtml = '';
@@ -238,6 +245,7 @@ class Card {
         this.updateAdditionalInfo();
         this.additionalInfoContainer.classList.remove("hidden");
         this.btnContainer.classList.remove("hidden");
+        Card.currentEditingCard = null; // позначаємо, що форма редагування закрита
     }
 
     updateAdditionalInfo() {
