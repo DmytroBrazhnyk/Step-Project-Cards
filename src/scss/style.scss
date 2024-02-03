@@ -29,6 +29,7 @@
     width: 600px;
     min-height: 200px;
     border: 2px solid black;
+    background: lightblue;
     .modal-content{
         padding: 20px;
         #fieldsContainer{
@@ -49,5 +50,39 @@
     }
 }
 
-
-
+//-------VisitCard--------
+.visitCard{
+    margin: 10px auto 0;
+    padding: 5px;
+    border: 2px solid black;
+    max-width: 90%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    p{
+        margin: 5px;
+    }
+    button{
+        margin: 0 10px 0 0;
+    }
+    span{
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+    }
+    &.buttonsContainer{
+        display: flex;
+    }
+}
+.additionalInfoContainer {
+    border: 2px solid black;
+    display: none;
+}
+.active{
+    display: block;
+}
+.hidden{
+    display: none;
+}
