@@ -109,9 +109,8 @@ class CreateVisitModal {
 //тестова строчка допоки не буде кнопки для створення візиту--------
 const createVisit = new CreateVisitModal();
 //------------------------------------------------------------------
-
-// картка візиту
-class VisitCard {
+//----------------------------------------------------------------------------------------
+class Card {
     constructor(visitData) {
         this.data = visitData;
         this.card = this.createCard();
