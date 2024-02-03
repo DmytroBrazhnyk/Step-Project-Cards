@@ -12,6 +12,8 @@ createCardButton.addEventListener('click', () => {
 
 class CreateVisitModal {
     constructor() {
+        createCardButton.classList.toggle("hidden");
+
         this.modal = document.createElement('div');
         this.modal.classList.add('creadeVisitModal');
         this.modal.innerHTML = `
@@ -71,6 +73,7 @@ class CreateVisitModal {
 
     closeVisitModal(){
         this.modal.remove();
+        createCardButton.classList.toggle("hidden");
     }
     createVisit(){
         const inputs = this.fieldsContainer.querySelectorAll('.modalInput');
@@ -89,9 +92,30 @@ class CreateVisitModal {
 
         this.closeVisitModal();
 
-        const card = new Card(this.visit);
+        this.pushToServer(this.visit);
+    }
+
+    pushToServer(visit) {
+        fetch("https://ajax.test-danit.com/api/v2/cards", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userToken}`
+            },
+            body: JSON.stringify(visit) 
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(response => {
+            console.log(response)
+            const card = new Card(response);
         card.addToVisitsList();
-        // треба додати відправлення на сервер 
+        })
+        .catch(error => console.error('Помилка:', error));
     }
 
     createInputField(fieldName, label) {
@@ -115,8 +139,8 @@ class CreateVisitModal {
         this.fieldsContainer.appendChild(selectField);
     }
 }
-//тестова строчка допоки не буде кнопки для створення візиту--------
-// const createVisit = new CreateVisitModal();
+//треба доробити відправку картки на сервер
+// 
 //----------------------------------------------------------------------------------------
 class Card {
     constructor(visitData) {
@@ -343,18 +367,18 @@ class Login {
 
 //-----------------------------------------------------------------------
 
-const testObj ={ 
-            selectedDoctor: 'Кардіолог',
-            purpose: 'Регулярний огляд',
-            description: 'Аналіз крові та артеріального тиску',
-            urgency: 'Пріоритетна',
-            fullName: 'Петренко Іван Петрович',
-            pressure: '120/80',
-            bmi: 24.5,
-            cardiovascularDiseases: 'Немає',
-            age: 35,
-            lastVisitDate: '2023-01-09'
-        }
+// const testObj ={ 
+//             selectedDoctor: 'Кардіолог',
+//             purpose: 'Регулярний огляд',
+//             description: 'Аналіз крові та артеріального тиску',
+//             urgency: 'Пріоритетна',
+//             fullName: 'Петренко Іван Петрович',
+//             pressure: '120/80',
+//             bmi: 24.5,
+//             cardiovascularDiseases: 'Немає',
+//             age: 35,
+//             lastVisitDate: '2023-01-09'
+//         }
 const translations = {
             doctorName: 'Лікар',
             purpose: 'Мета візиту',
@@ -368,11 +392,11 @@ const translations = {
             lastVisitDate: 'Дата останнього відвідування'
 };
 
-        const cardInstance = new Card(testObj);
-        cardInstance.addToVisitsList();
+        // const cardInstance = new Card(testObj);
+        // cardInstance.addToVisitsList();
 
-        const cardInstance2 = new Card(testObj);
-        cardInstance2.addToVisitsList()
+        // const cardInstance2 = new Card(testObj);
+        // cardInstance2.addToVisitsList()
 
-        const cardInstance3 = new Card(testObj);
-        cardInstance3.addToVisitsList()
+        // const cardInstance3 = new Card(testObj);
+        // cardInstance3.addToVisitsList()
