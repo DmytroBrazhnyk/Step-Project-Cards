@@ -39,7 +39,7 @@ class CreateVisitModal {
         if (selectedDoctor === 'cardiologist') {
             this.createInputField('pressure', 'Звичайний тиск:');
             this.createInputField('bmi', 'Індекс маси тіла:');
-            this.createInputField('heartDiseases', 'Перенесені захворювання серцево-судинної системи:');
+            this.createInputField('cardiovascularDiseases', 'Перенесені захворювання серцево-судинної системи:');
             this.createInputField('age', 'Вік:');
         } else if (selectedDoctor === 'dentist') {
             this.createInputField('lastVisitDate', 'Дата останнього відвідування:');
@@ -79,7 +79,8 @@ class CreateVisitModal {
         console.log(createVisit.visit);
         this.closeVisitModal();
         //виклик функції для створення картки та відправлення на сервер------
-        
+        const card = new Card(createVisit.visit);
+        card.addToVisitsList();
         //-------------------------------------------------------------------
     }
 
@@ -112,248 +113,177 @@ const createVisit = new CreateVisitModal();
 // картка візиту
 class VisitCard {
     constructor(visitData) {
-        this.visitData = visitData;
-        this.isExpanded = false;
-        this.isEditing = false;
-        this.createCardElement();
-        this.render();
+        this.data = visitData;
+        this.card = this.createCard();
+        this.visitsListSection = document.querySelector('.visits-list');
+        this.additionalInfoContainer = this.card.querySelector('.additionalInfoContainer');
+        this.btnContainer = this.card.querySelector(".buttonsContainer")
+        this.modal 
     }
 
-    createCardElement() {
-        this.cardElement = document.createElement('div');
-        this.cardElement.classList.add('visitCard');
-
-        // Додати інформацію, яка завжди видима
-        this.cardElement.innerHTML = `
+    createCard() {
+        const cardElement = document.createElement("div");
+        cardElement.classList.add("visitCard");
+        cardElement.innerHTML = `
             <div class="visibleInfo">
-                <p>ПІБ: ${this.visitData.fullName}</p>
-                <p>Лікар: ${this.visitData.doctorName}</p>
+                <p>ПІБ: ${this.data.fullName}</p>
+                <p>Лікар: ${this.data.selectedDoctor}</p>
             </div>
-            <div class="additionalInfoContainer"></div>
-            <button class="showMoreBtn">Показати більше</button>
-            <button class="editBtn">Редагувати</button>
-            <button class="saveChangesBtn" style="display: none;">Зберегти зміни</button>
-            <span class="deleteIcon">❌</span>
+            <div class="additionalInfoContainer">
+                ${this.renderAdditionalInfo()}
+            </div>
+            <div class="buttonsContainer">
+                <button class="showMoreBtn">Показати більше</button>
+                <button class="editBtn">Редагувати</button>
+                <button class="deleteIcon">❌</button>
+            </div>
         `;
-
-        // Додати обробники подій
-        this.cardElement.querySelector('.showMoreBtn').addEventListener('click', () => this.toggleExpanded());
-        this.cardElement.querySelector('.editBtn').addEventListener('click', () => this.toggleEditing());
-        this.cardElement.querySelector('.saveChangesBtn').addEventListener('click', () => this.saveChanges());
-        this.cardElement.querySelector('.deleteIcon').addEventListener('click', () => this.deleteCard());
+        cardElement.addEventListener('click', this.handleButtonClick.bind(this));
+        return cardElement;
     }
 
-    updateShowMoreButtonOnEditing() {
-        const showMoreButton = this.cardElement.querySelector('.showMoreBtn');
-        if (showMoreButton) {
-            showMoreButton.disabled = this.isEditing;
-        }
-    }
-
-    render() {
-        const additionalInfoContainer = this.cardElement.querySelector('.additionalInfoContainer');
-        additionalInfoContainer.innerHTML = '';
-
-        if (this.isExpanded && !this.isEditing) {
-            Object.keys(this.visitData).forEach(key => {
-                const translatedKey = translations[key] || key;
-
-                if (key === 'urgency' && !this.isEditing) {
-                    additionalInfoContainer.innerHTML += `
-                        <p>${translatedKey}: ${this.visitData[key]}</p>
-                    `;
-                } else if (key !== 'doctorName') {
-                    additionalInfoContainer.innerHTML += `<p>${translatedKey}: ${this.visitData[key]}</p>`;
+    renderAdditionalInfo() {
+        let additionalInfoHtml = '';
+            for (const key in this.data) {
+                if (key !== 'selectedDoctor' && key !== 'fullName') {
+                    const translatedKey = translations[key] || key;
+                    additionalInfoHtml += `<p>${translatedKey}: ${this.data[key]}</p>`;
                 }
-            });
+            }
+        return additionalInfoHtml;
+    }
+//------------------------кнопки--------------------------------------------
+    handleButtonClick(event) {
+        const target = event.target;
+        if (target.classList.contains('editBtn')) {
+            this.redactCard();
+        } else if (target.classList.contains('deleteIcon')) {
+            this.deleteCard();
+        } else if (target.classList.contains("showMoreBtn")){
+            this.showCard();
         }
-
-        document.querySelector('.visits-list').appendChild(this.cardElement);
-
-        const showMoreBtn = this.cardElement.querySelector('.showMoreBtn');
-        showMoreBtn.disabled = this.isEditing;
-        showMoreBtn.innerText = this.isExpanded ? 'Приховати' : 'Показати більше';
     }
 
-    toggleExpanded() {
-        this.isExpanded = !this.isExpanded;
-        this.render();
+    deleteCard() {
+        this.card.remove();
     }
-
-    toggleEditing() {
-        this.isEditing = !this.isEditing;
-    
-        if (this.isEditing) {
-            this.displayEditForm();
-            this.cardElement.querySelector('.showMoreBtn').disabled = true;
-        } else {
-            this.saveChanges();
-            this.hideEditForm();
-            this.cardElement.querySelector('.showMoreBtn').disabled = false;
-        }
-    
-        this.render();
-        this.updateShowMoreButtonOnEditing();
+    showCard(){
+        const showMoreBtn = this.card.querySelector('.showMoreBtn')
+        this.additionalInfoContainer.classList.toggle('active');
+        showMoreBtn.innerText = this.additionalInfoContainer.classList.contains("active") ? "Згорнути" : "Показати більше";
     }
+    redactCard() {
+        this.additionalInfoContainer.classList.add("hidden");
+        this.btnContainer.classList.add("hidden");
 
-    displayEditForm(visitData) {
-        const additionalInfoContainer = this.cardElement.querySelector('.additionalInfoContainer');
-        const visibleInfoContainer = this.cardElement.querySelector('.visibleInfo');
-    
-        visibleInfoContainer.style.display = 'none';
-        additionalInfoContainer.style.display = 'block';
-    
-        // Встановлюємо значення visitData для використання у формі редагування
-        this.visitData = visitData;
-    
-        this.renderEditForm();
+        this.modal = document.createElement('div');
+        this.modal.classList.add('modal');
+        this.modal.innerHTML = `
+            <div class="modal-content">
+                <h2>Редагування даних</h2>
+                ${this.renderEditFields()}
+                <button class="saveBtn">Зберегти</button>
+            </div>
+        `;
+        this.card.append(this.modal)
+
+        const saveBtn = this.modal.querySelector('.saveBtn');
+        saveBtn.addEventListener('click', () => this.saveChanges());
     }
-
-    hideEditForm() {
-        const additionalInfoContainer = this.cardElement.querySelector('.additionalInfoContainer');
-        const visibleInfoContainer = this.cardElement.querySelector('.visibleInfo');
-    
-        additionalInfoContainer.style.display = 'none';
-        visibleInfoContainer.style.display = 'block';
-    
-        this.cardElement.querySelector('.editBtn').style.display = 'inline-block';
-        this.cardElement.querySelector('.saveChangesBtn').style.display = 'none';
-    
-        if (this.isExpanded) {
-            additionalInfoContainer.style.display = 'block';
-        }
-    
-        this.render();
-        this.updateShowMoreButtonOnEditing();
-    }
-
-    renderEditForm() {
-        const additionalInfoContainer = this.cardElement.querySelector('.additionalInfoContainer');
-        additionalInfoContainer.innerHTML = '<div class="editForm">';
-    
-        Object.keys(this.visitData).forEach(key => {
-            if (key !== 'doctorName') {
+    renderEditFields() {
+        let editFieldsHtml = '';
+        for (const key in this.data) {
+            if (key !== 'selectedDoctor' && key !== 'fullName') {
                 const translatedKey = translations[key] || key;
                 if (key === 'urgency') {
-                    // Додайте дропдаун для "Терміновості"
-                    additionalInfoContainer.innerHTML += `
-                        <div>
-                            <label for="edited${key}">${translatedKey}:</label>
-                            <select id="edited${key}">
-                                ${urgencyOptions.map(option => `<option value="${option}" ${this.visitData[key] === option ? 'selected' : ''}>${option}</option>`).join('')}
+                    editFieldsHtml += `
+                        <div class="edit-field">
+                            <label for="${key}">${translatedKey}</label>
+                            <select id="${key}">
+                                <option value="Звичайна" ${this.data[key] === 'Звичайна' ? 'selected' : ''}>Звичайна</option>
+                                <option value="Пріоритетна" ${this.data[key] === 'Пріоритетна' ? 'selected' : ''}>Пріоритетна</option>
+                                <option value="Невідкладна" ${this.data[key] === 'Невідкладна' ? 'selected' : ''}>Невідкладна</option>
                             </select>
                         </div>
                     `;
                 } else {
-                    // Звичайний ввід для інших полів
-                    additionalInfoContainer.innerHTML += `
-                        <div>
-                            <label for="edited${key}">${translatedKey}:</label>
-                            <input type="text" id="edited${key}" value="${this.visitData[key]}">
+                    editFieldsHtml += `
+                        <div class="edit-field">
+                            <label for="${key}">${translatedKey}</label>
+                            <input type="text" id="${key}" value="${this.data[key]}">
                         </div>
                     `;
                 }
             }
-        });
-    
-        additionalInfoContainer.innerHTML += '</div>';
-    
-        this.cardElement.querySelector('.editBtn').style.display = 'none';
-        this.cardElement.querySelector('.saveChangesBtn').style.display = 'inline-block';
-    
-        this.cardElement.querySelector('.saveChangesBtn').addEventListener('click', () => this.saveChanges());
+        }
+        return editFieldsHtml;
     }
-
-    updateVisitData() {
-        const additionalInfoContainer = this.cardElement.querySelector('.additionalInfoContainer');
-    
-        Object.keys(this.visitData).forEach(key => {
-            if (key !== 'doctorName') {
-                this.visitData[key] = document.getElementById(`edited${key}`).value;
-            }
-        });
-    
-        additionalInfoContainer.innerHTML = '';
-    
-        Object.keys(this.visitData).forEach(key => {
-            additionalInfoContainer.innerHTML += `<p>${key}: ${this.visitData[key]}</p>`;
-        });
-    
-        this.render();
-    }
-
     saveChanges() {
-        this.updateVisitData();
-        // this.hideEditForm();
-        this.updateShowMoreButtonOnEditing();
-        this.render();
+        const newData = {};
+        
+        for (const key in this.data) {
+            const inputField = document.getElementById(key);
+            if (inputField && inputField.value !== undefined) {
+                newData[key] = inputField.value;
+            }
+        }
+
+        for (const key in newData) {
+            if (this.data.hasOwnProperty(key)) {
+                this.data[key] = newData[key];
+            }
+        }
+        
+        this.modal.remove();
+        console.log(this.data);
+        this.updateAdditionalInfo();
+        this.additionalInfoContainer.classList.remove("hidden");
+        this.btnContainer.classList.remove("hidden");
     }
 
-    deleteCard() {
-        this.cardElement.remove();
+    updateAdditionalInfo() {
+        const newAdditionalInfoHtml = this.renderAdditionalInfo();
+        this.additionalInfoContainer.innerHTML = newAdditionalInfoHtml;
+    }
+
+
+//---------------------------------------------------------------------------
+    addToVisitsList() {
+        this.visitsListSection.appendChild(this.card);
     }
 }
+//-----------------------------------------------------------------------------
 
-class VisitCardManager {
-    constructor() {
-        this.visitsList = document.querySelector('.visits-list');
-    }
-
-    addVisitCard(visitData) {
-        const visitCard = new VisitCard(visitData);
-        this.visitsList.appendChild(visitCard.cardElement);
-    
-        // Додайте обробник подій для кнопки "Редагувати"
-        visitCard.cardElement.querySelector('.editBtn').addEventListener('click', () => visitCard.displayEditForm(visitData));
-    }
-}
-
-const visitCardManager = new VisitCardManager();
-
+const testObj ={ 
+            selectedDoctor: 'Кардіолог',
+            purpose: 'Регулярний огляд',
+            description: 'Аналіз крові та артеріального тиску',
+            urgency: 'Пріоритетна',
+            fullName: 'Петренко Іван Петрович',
+            pressure: '120/80',
+            bmi: 24.5,
+            cardiovascularDiseases: 'Немає',
+            age: 35,
+            lastVisitDate: '2023-01-09'
+        }
 const translations = {
-    doctorName: 'Лікар',
-    purpose: 'Мета',
-    description: 'Опис',
-    urgency: 'Терміновість',
-    fullName: 'ПІБ',
-    bloodPressure: 'Тиск',
-    bmi: 'ІМТ',
-    cardiovascularDiseases: 'Кардіоваскулярні захворювання',
-    age: 'Вік',
-    lastVisitDate: 'Дата останнього візиту'
+            doctorName: 'Лікар',
+            purpose: 'Мета візиту',
+            description: 'Короткий опис візиту',
+            urgency: 'Терміновість',
+            fullName: 'ПІБ',
+            pressure: 'Звичайний тиск',
+            bmi: 'Індекс маси тіла',
+            cardiovascularDiseases: 'Перенесені захворювання серцево-судинної системи',
+            age: 'Вік',
+            lastVisitDate: 'Дата останнього відвідування'
 };
 
-const urgencyOptions = ['Висока', 'Середня', 'Низька'];
+        const cardInstance = new Card(testObj);
+        cardInstance.addToVisitsList();
 
-// Приклад данних для кількох візитів
-const visitsData = [
-    { 
-        doctorName: 'Доктор Іванова',
-        purpose: 'Регулярний огляд',
-        description: 'Аналіз крові та артеріального тиску',
-        urgency: 'Пріоритетна',
-        fullName: 'Петренко Іван Петрович',
-        bloodPressure: '120/80',
-        bmi: 24.5,
-        cardiovascularDiseases: 'Немає',
-        age: 35,
-        lastVisitDate: '2023-01-09'
-    },
-    // { 
-    //     doctorName: 'Доктор Іванова',
-    //     purpose: 'Регулярний огляд',
-    //     description: 'Аналіз крові та артеріального тиску',
-    //     urgency: 'Пріоритетна',
-    //     fullName: 'Петренко Іван Петрович',
-    //     bloodPressure: '120/80',
-    //     bmi: 24.5,
-    //     cardiovascularDiseases: 'Немає',
-    //     age: 35,
-    //     lastVisitDate: '2023-01-09'
-    // },
-    // Додавайте більше об'єктів даних візитів за потреби
-];
+        const cardInstance2 = new Card(testObj);
+        cardInstance2.addToVisitsList()
 
-visitsData.forEach(visitData => {
-    visitCardManager.addVisitCard(visitData);
-});
+        const cardInstance3 = new Card(testObj);
+        cardInstance3.addToVisitsList()
