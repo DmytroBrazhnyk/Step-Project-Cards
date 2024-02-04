@@ -1,7 +1,19 @@
 const visitContainer = document.querySelector(".visits-list");
+const loginButton = document.getElementById('header-userActions-loginButton');
+loginButton.addEventListener("click", () => new Login());
+let userToken = "";
+
+
+const createCardButton = document.getElementById('header-userActions-createCard');
+createCardButton.addEventListener('click', () => {
+    let createVisit = new CreateVisitModal();
+});
+
 
 class CreateVisitModal {
     constructor() {
+        createCardButton.classList.toggle("hidden");
+
         this.modal = document.createElement('div');
         this.modal.classList.add('creadeVisitModal');
         this.modal.innerHTML = `
@@ -61,6 +73,7 @@ class CreateVisitModal {
 
     closeVisitModal(){
         this.modal.remove();
+        createCardButton.classList.toggle("hidden");
     }
     createVisit(){
         const inputs = this.fieldsContainer.querySelectorAll('.modalInput');
@@ -75,13 +88,34 @@ class CreateVisitModal {
         });
 
         this.visit = visitData;
-        
-        console.log(createVisit.visit);
+        console.log(this.visit);
+
         this.closeVisitModal();
-        //виклик функції для створення картки та відправлення на сервер------
-        const card = new Card(createVisit.visit);
+
+        this.pushToServer(this.visit);
+    }
+
+    pushToServer(visit) {
+        fetch("https://ajax.test-danit.com/api/v2/cards", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userToken}`
+            },
+            body: JSON.stringify(visit) 
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(response => {
+            console.log(response)
+            const card = new Card(response);
         card.addToVisitsList();
-        //-------------------------------------------------------------------
+        })
+        .catch(error => console.error('Помилка:', error));
     }
 
     createInputField(fieldName, label) {
@@ -106,18 +140,42 @@ class CreateVisitModal {
     }
 }
 
-//тестова строчка допоки не буде кнопки для створення візиту--------
-const createVisit = new CreateVisitModal();
-//------------------------------------------------------------------
 //----------------------------------------------------------------------------------------
 class Card {
+    static currentEditingCard = null;
+
     constructor(visitData) {
         this.data = visitData;
+        this.isEditing = false; //перевірка чи відкрита форма редагування
         this.card = this.createCard();
         this.visitsListSection = document.querySelector('.visits-list');
         this.additionalInfoContainer = this.card.querySelector('.additionalInfoContainer');
         this.btnContainer = this.card.querySelector(".buttonsContainer")
         this.modal 
+
+        this.card.cardInstance = this;
+    }
+
+    putToServer(card) {
+        const cardId = this.data.id;
+        fetch(`https://ajax.test-danit.com/api/v2/cards/${cardId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userToken}`
+            },
+            body: JSON.stringify(card) 
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(response => {
+            console.log(response)
+        })
+        .catch(error => console.error('Помилка:', error));
     }
 
     createCard() {
@@ -134,8 +192,9 @@ class Card {
             <div class="buttonsContainer">
                 <button class="showMoreBtn">Показати більше</button>
                 <button class="editBtn">Редагувати</button>
-                <button class="deleteIcon">❌</button>
+                
             </div>
+            <button class="deleteIcon">❌</button>
         `;
         cardElement.addEventListener('click', this.handleButtonClick.bind(this));
         return cardElement;
@@ -144,7 +203,7 @@ class Card {
     renderAdditionalInfo() {
         let additionalInfoHtml = '';
             for (const key in this.data) {
-                if (key !== 'selectedDoctor' && key !== 'fullName') {
+                if (key !== 'selectedDoctor' && key !== 'fullName' && key !== 'id') {
                     const translatedKey = translations[key] || key;
                     additionalInfoHtml += `<p>${translatedKey}: ${this.data[key]}</p>`;
                 }
@@ -164,7 +223,23 @@ class Card {
     }
 
     deleteCard() {
-        this.card.remove();
+        const cardId = this.data.id;
+
+        if (cardId) {
+            fetch(`https://ajax.test-danit.com/api/v2/cards/${cardId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${userToken}`
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Failed to delete card with ID ${cardId}`);
+                }
+                this.card.remove();
+            })
+            .catch(error => console.error(error));
+        }
     }
     showCard(){
         const showMoreBtn = this.card.querySelector('.showMoreBtn')
@@ -172,27 +247,30 @@ class Card {
         showMoreBtn.innerText = this.additionalInfoContainer.classList.contains("active") ? "Згорнути" : "Показати більше";
     }
     redactCard() {
-        this.additionalInfoContainer.classList.add("hidden");
-        this.btnContainer.classList.add("hidden");
+        if (!Card.currentEditingCard) { // перевіряємо, чи не редагується вже інша карта
+            Card.currentEditingCard = this; // зберігаємо посилання на поточну редаговану карту
+            this.additionalInfoContainer.classList.add("hidden");
+            this.btnContainer.classList.add("hidden");
 
-        this.modal = document.createElement('div');
-        this.modal.classList.add('modal');
-        this.modal.innerHTML = `
-            <div class="modal-content">
-                <h2>Редагування даних</h2>
-                ${this.renderEditFields()}
-                <button class="saveBtn">Зберегти</button>
-            </div>
-        `;
-        this.card.append(this.modal)
+            this.modal = document.createElement('div');
+            this.modal.classList.add('modal');
+            this.modal.innerHTML = `
+                <div class="modal-content">
+                    <h2>Редагування даних</h2>
+                    ${this.renderEditFields()}
+                    <button class="saveBtn">Зберегти</button>
+                </div>
+            `;
+            this.card.append(this.modal)
 
-        const saveBtn = this.modal.querySelector('.saveBtn');
-        saveBtn.addEventListener('click', () => this.saveChanges());
+            const saveBtn = this.modal.querySelector('.saveBtn');
+            saveBtn.addEventListener('click', () => this.saveChanges());
+        }
     }
     renderEditFields() {
         let editFieldsHtml = '';
         for (const key in this.data) {
-            if (key !== 'selectedDoctor' && key !== 'fullName') {
+            if (key !== 'selectedDoctor' && key !== 'fullName' && key !== 'id') {
                 const translatedKey = translations[key] || key;
                 if (key === 'urgency') {
                     editFieldsHtml += `
@@ -238,6 +316,8 @@ class Card {
         this.updateAdditionalInfo();
         this.additionalInfoContainer.classList.remove("hidden");
         this.btnContainer.classList.remove("hidden");
+        this.putToServer(this.data);
+        Card.currentEditingCard = null; // позначаємо, що форма редагування закрита
     }
 
     updateAdditionalInfo() {
@@ -251,20 +331,170 @@ class Card {
         this.visitsListSection.appendChild(this.card);
     }
 }
-//-----------------------------------------------------------------------------
+//-------login------------------------------------------------------------
+class Login {
+    constructor() {
+        this.modal = this.createLoginModal();
+        document.body.append(this.modal);
+        this.loginButton = document.getElementById('header-userActions-loginButton');
+        this.loginButton.classList.add("hidden");
+        this.loginEventButton = this.modal.querySelector("#loginBtn");
+        this.errorElement = this.modal.querySelector("#error-message"); // Додали елемент для відображення повідомлення про помилку
+        this.loginEventButton.addEventListener('click', () => this.loginEvent());
+    }
 
-const testObj ={ 
-            selectedDoctor: 'Кардіолог',
-            purpose: 'Регулярний огляд',
-            description: 'Аналіз крові та артеріального тиску',
-            urgency: 'Пріоритетна',
-            fullName: 'Петренко Іван Петрович',
-            pressure: '120/80',
-            bmi: 24.5,
-            cardiovascularDiseases: 'Немає',
-            age: 35,
-            lastVisitDate: '2023-01-09'
+    createLoginModal() {
+        const loginModal = document.createElement('div');
+        loginModal.classList.add('loginModal');
+        loginModal.innerHTML = `
+            <label for="email">Email:</label>
+            <input type="email" id="email" />
+            <br />
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" />
+            <br />
+            <button id="loginBtn">Увійти</button>
+            <p id="error-message" class="error-message"></p> <!-- Додали елемент для відображення повідомлення про помилку -->
+        `;
+        return loginModal;
+    }
+
+    loginEvent() {
+        const emailInput = this.modal.querySelector("#email");
+        const passwordInput = this.modal.querySelector("#password");
+        const email = emailInput.value;
+        const password = passwordInput.value;
+
+        fetch("https://ajax.test-danit.com/api/v2/cards/login", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Неправильні дані');
+            }
+            return response.text();
+        })
+        .then(token => {
+            userToken = token;
+            console.log(userToken);
+
+            createCardButton.classList.add('active');
+            this.displayCards();
+
+            this.modal.remove();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            this.clearFields();
+            this.showError('Неправильні дані'); 
+        });
+    }
+
+    clearFields() {
+        const emailInput = this.modal.querySelector("#email");
+        const passwordInput = this.modal.querySelector("#password");
+        emailInput.value = '';
+        passwordInput.value = '';
+        this.hideError(); 
+    }
+    showError(message) {
+        this.errorElement.textContent = message;
+        this.errorElement.classList.add("visible");
+    }
+    hideError() {
+        this.errorElement.textContent = '';
+        this.errorElement.classList.remove("visible");
+    }
+    displayCards(){
+        fetch("https://ajax.test-danit.com/api/v2/cards", {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${userToken}`
         }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            data.forEach(cardData => {
+                const card = new Card(cardData);
+                card.addToVisitsList();
+            });
+        })
+        .catch(error => console.error('Помилка:', error));
+            }
+        }
+
+//-----------------------------------------------------------------------
+class Filter {
+    constructor() {
+        this.initElements();
+        this.attachListeners();
+    }
+    initElements() {
+        this.visitTitleInput = document.getElementById('visitTitle');
+        this.urgencyFilterSelect = document.getElementById('urgencyFilter');
+    }
+    attachListeners() {
+        this.visitTitleInput.addEventListener('input', this.handleInputChange.bind(this));
+        this.urgencyFilterSelect.addEventListener('change', this.handleSelectChange.bind(this));
+    }
+    handleInputChange(event) {
+        const inputValue = event.target.value;
+        console.log(`Input changed: ${inputValue}`);
+        this.applyFilters();
+    }
+    handleSelectChange(event) {
+        const selectValue = event.target.value;
+        console.log(`Select changed: ${selectValue}`);
+        this.applyFilters();
+    }
+    applyFilters() {
+        const selectedUrgency = this.urgencyFilterSelect.value;
+        const inputDescriptionOrPurpose = this.visitTitleInput.value.toLowerCase().trim();
+    
+        const visitCards = document.querySelectorAll('.visitCard');
+    
+        visitCards.forEach(cardElement => {
+            const cardInstance = cardElement.cardInstance;
+    
+            const urgencyValue = cardInstance.data.urgency;
+            const descriptionValue = cardInstance.data.description.toLowerCase().trim();
+            const purposeValue = cardInstance.data.purpose.toLowerCase().trim();
+            console.log(urgencyValue);
+            if (
+                (selectedUrgency === urgencyValue || selectedUrgency === "Усі") &&
+                (descriptionValue.includes(inputDescriptionOrPurpose) || purposeValue.includes(inputDescriptionOrPurpose))
+            ) {
+                cardElement.classList.remove('hidden');  
+            } else {
+                cardElement.classList.add('hidden');   
+            }
+        });
+    }
+}
+
+const filter = new Filter();
+//----------------------------------------------------------------
+// const testObj ={ 
+//             selectedDoctor: 'Кардіолог',
+//             purpose: 'Регулярний огляд',
+//             description: 'Аналіз крові та артеріального тиску',
+//             urgency: 'Пріоритетна',
+//             fullName: 'Петренко Іван Петрович',
+//             pressure: '120/80',
+//             bmi: 24.5,
+//             cardiovascularDiseases: 'Немає',
+//             age: 35,
+//             lastVisitDate: '2023-01-09'
+//         }
 const translations = {
             doctorName: 'Лікар',
             purpose: 'Мета візиту',
@@ -278,11 +508,11 @@ const translations = {
             lastVisitDate: 'Дата останнього відвідування'
 };
 
-        const cardInstance = new Card(testObj);
-        cardInstance.addToVisitsList();
+        // const cardInstance = new Card(testObj);
+        // cardInstance.addToVisitsList();
 
-        const cardInstance2 = new Card(testObj);
-        cardInstance2.addToVisitsList()
+        // const cardInstance2 = new Card(testObj);
+        // cardInstance2.addToVisitsList()
 
-        const cardInstance3 = new Card(testObj);
-        cardInstance3.addToVisitsList()
+        // const cardInstance3 = new Card(testObj);
+        // cardInstance3.addToVisitsList()

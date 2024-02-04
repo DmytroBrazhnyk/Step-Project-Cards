@@ -31,6 +31,7 @@
     <div class="header-logo">Логотип</div>
     <div class="header-userActions">
         <button id="header-userActions-loginButton">Вхід</button>
+        <button id="header-userActions-createCard" class="header-userActions-createCard">Створити візит</button>
     </div>
 </header>
 
@@ -39,17 +40,12 @@
 			<label for="visitTitle">Заголовок/вміст візиту:</label>
 			<input type="text" id="visitTitle">
 	
-			<label for="visitStatus">Статус (Open/Done):</label>
-			<select id="visitStatus">
-				<option value="Open">Open</option>
-				<option value="Done">Done</option>
-			</select>
-	
 			<label for="urgency">Терміновість візиту:</label>
 			<select id="urgencyFilter">
-				<option value="High">High</option>
-				<option value="Normal">Normal</option>
-				<option value="Low">Low</option>
+				<option value="Усі">Неважливо</option>
+				<option value="Невідкладна">Невідкладна</option>
+				<option value="Пріоритетна">Пріоритетна</option>
+				<option value="Звичайна">Звичайна</option>
 			</select>
 		</section>
 	
