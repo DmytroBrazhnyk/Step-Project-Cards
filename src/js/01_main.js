@@ -149,6 +149,8 @@ class Card {
         this.additionalInfoContainer = this.card.querySelector('.additionalInfoContainer');
         this.btnContainer = this.card.querySelector(".buttonsContainer")
         this.modal 
+
+        this.card.cardInstance = this;
     }
 
     createCard() {
@@ -384,7 +386,56 @@ class Login {
         }
 
 //-----------------------------------------------------------------------
+class Filter {
+    constructor() {
+        this.initElements();
+        this.attachListeners();
+    }
+    initElements() {
+        this.visitTitleInput = document.getElementById('visitTitle');
+        this.urgencyFilterSelect = document.getElementById('urgencyFilter');
+    }
+    attachListeners() {
+        this.visitTitleInput.addEventListener('input', this.handleInputChange.bind(this));
+        this.urgencyFilterSelect.addEventListener('change', this.handleSelectChange.bind(this));
+    }
+    handleInputChange(event) {
+        const inputValue = event.target.value;
+        console.log(`Input changed: ${inputValue}`);
+        this.applyFilters();
+    }
+    handleSelectChange(event) {
+        const selectValue = event.target.value;
+        console.log(`Select changed: ${selectValue}`);
+        this.applyFilters();
+    }
+    applyFilters() {
+        const selectedUrgency = this.urgencyFilterSelect.value;
+        const inputDescriptionOrPurpose = this.visitTitleInput.value.toLowerCase().trim();
+    
+        const visitCards = document.querySelectorAll('.visitCard');
+    
+        visitCards.forEach(cardElement => {
+            const cardInstance = cardElement.cardInstance;
+    
+            const urgencyValue = cardInstance.data.urgency;
+            const descriptionValue = cardInstance.data.description.toLowerCase().trim();
+            const purposeValue = cardInstance.data.purpose.toLowerCase().trim();
+    
+            if (
+                (selectedUrgency === urgencyValue || selectedUrgency === "Усі") &&
+                (descriptionValue.includes(inputDescriptionOrPurpose) || purposeValue.includes(inputDescriptionOrPurpose))
+            ) {
+                cardElement.classList.remove('hidden');  
+            } else {
+                cardElement.classList.add('hidden');   
+            }
+        });
+    }
+}
 
+const filter = new Filter();
+//----------------------------------------------------------------
 // const testObj ={ 
 //             selectedDoctor: 'Кардіолог',
 //             purpose: 'Регулярний огляд',
