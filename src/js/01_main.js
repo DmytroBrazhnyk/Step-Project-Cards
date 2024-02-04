@@ -139,8 +139,7 @@ class CreateVisitModal {
         this.fieldsContainer.appendChild(selectField);
     }
 }
-//треба доробити відправку картки на сервер
-// 
+
 //----------------------------------------------------------------------------------------
 class Card {
     constructor(visitData) {
@@ -335,13 +334,14 @@ class Login {
             console.log(userToken);
 
             createCardButton.classList.add('active');
+            this.displayCards();
 
             this.modal.remove();
         })
         .catch(error => {
             console.error('Error:', error);
             this.clearFields();
-            this.showError('Неправильні дані'); // Вивести повідомлення про помилку
+            this.showError('Неправильні дані'); 
         });
     }
 
@@ -361,9 +361,27 @@ class Login {
         this.errorElement.classList.remove("visible");
     }
     displayCards(){
-
-    }
-}
+        fetch("https://ajax.test-danit.com/api/v2/cards", {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${userToken}`
+        }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            data.forEach(cardData => {
+                const card = new Card(cardData);
+                card.addToVisitsList();
+            });
+        })
+        .catch(error => console.error('Помилка:', error));
+            }
+        }
 
 //-----------------------------------------------------------------------
 
