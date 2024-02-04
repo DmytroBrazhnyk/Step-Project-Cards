@@ -2,6 +2,7 @@
 @import 'global/*.scss';
 @import '**/_*.scss';
 @import '../components/**/*.scss';
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
 :root {
     --bgColor: #a3c9d9;
@@ -9,6 +10,12 @@
     --buttonColor: #5679bf;
     --color1: #84b1d9;
     --color2: #b3cff2;
+    --regular-font: 'Montserrat', sans-serif;
+    --bold-font: 'Montserrat', sans-serif;
+}
+
+*{
+    font-family: var(--regular-font);
 }
 
 .header {
