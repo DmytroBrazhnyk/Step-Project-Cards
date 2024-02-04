@@ -3,6 +3,14 @@
 @import '**/_*.scss';
 @import '../components/**/*.scss';
 
+:root {
+    --bgColor: #a3c9d9;
+    --borderColor: #243e73;
+    --buttonColor: #5679bf;
+    --color1: #84b1d9;
+    --color2: #b3cff2;
+}
+
 .header {
     display: flex;
     justify-content: space-between;
@@ -68,6 +76,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    background-color: var(--color2);
     p{
         margin: 5px;
     }
@@ -91,6 +100,9 @@
         top: 10px;
         right: 10px;
     }
+    // .additionalInfoContainer{
+    //     background: lightblue;
+    // }
 }
 .additionalInfoContainer {
     border: 2px solid black;

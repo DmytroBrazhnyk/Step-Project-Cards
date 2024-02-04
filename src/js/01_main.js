@@ -156,6 +156,28 @@ class Card {
         this.card.cardInstance = this;
     }
 
+    putToServer(card) {
+        const cardId = this.data.id;
+        fetch(`https://ajax.test-danit.com/api/v2/cards/${cardId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${userToken}`
+            },
+            body: JSON.stringify(card) 
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(response => {
+            console.log(response)
+        })
+        .catch(error => console.error('Помилка:', error));
+    }
+
     createCard() {
         const cardElement = document.createElement("div");
         cardElement.classList.add("visitCard");
@@ -248,7 +270,7 @@ class Card {
     renderEditFields() {
         let editFieldsHtml = '';
         for (const key in this.data) {
-            if (key !== 'selectedDoctor' && key !== 'fullName') {
+            if (key !== 'selectedDoctor' && key !== 'fullName' && key !== 'id') {
                 const translatedKey = translations[key] || key;
                 if (key === 'urgency') {
                     editFieldsHtml += `
@@ -294,6 +316,7 @@ class Card {
         this.updateAdditionalInfo();
         this.additionalInfoContainer.classList.remove("hidden");
         this.btnContainer.classList.remove("hidden");
+        this.putToServer(this.data);
         Card.currentEditingCard = null; // позначаємо, що форма редагування закрита
     }
 
@@ -445,7 +468,7 @@ class Filter {
             const urgencyValue = cardInstance.data.urgency;
             const descriptionValue = cardInstance.data.description.toLowerCase().trim();
             const purposeValue = cardInstance.data.purpose.toLowerCase().trim();
-    
+            console.log(urgencyValue);
             if (
                 (selectedUrgency === urgencyValue || selectedUrgency === "Усі") &&
                 (descriptionValue.includes(inputDescriptionOrPurpose) || purposeValue.includes(inputDescriptionOrPurpose))
