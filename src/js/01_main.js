@@ -152,6 +152,8 @@ class Card {
         this.additionalInfoContainer = this.card.querySelector('.additionalInfoContainer');
         this.btnContainer = this.card.querySelector(".buttonsContainer")
         this.modal 
+
+        this.card.cardInstance = this;
     }
 
     createCard() {
@@ -179,7 +181,7 @@ class Card {
     renderAdditionalInfo() {
         let additionalInfoHtml = '';
             for (const key in this.data) {
-                if (key !== 'selectedDoctor' && key !== 'fullName') {
+                if (key !== 'selectedDoctor' && key !== 'fullName' && key !== 'id') {
                     const translatedKey = translations[key] || key;
                     additionalInfoHtml += `<p>${translatedKey}: ${this.data[key]}</p>`;
                 }
@@ -199,7 +201,23 @@ class Card {
     }
 
     deleteCard() {
-        this.card.remove();
+        const cardId = this.data.id;
+
+        if (cardId) {
+            fetch(`https://ajax.test-danit.com/api/v2/cards/${cardId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${userToken}`
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Failed to delete card with ID ${cardId}`);
+                }
+                this.card.remove();
+            })
+            .catch(error => console.error(error));
+        }
     }
     showCard(){
         const showMoreBtn = this.card.querySelector('.showMoreBtn')
