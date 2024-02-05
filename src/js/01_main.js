@@ -76,21 +76,83 @@ class CreateVisitModal {
     createVisit(){
         const inputs = this.fieldsContainer.querySelectorAll('.modalInput');
         const visitData = {};
+        this.valid = true;
 
         visitData['selectedDoctor'] = visitData['selectedDoctor'] = this.selectElement.options[this.selectElement.selectedIndex].text;;
 
         inputs.forEach(input => {
             const id = input.id;
-            const value = input.type === 'select-one' ? input.options[input.selectedIndex].value : input.value;
+            let value;
+            // Отримати значення input
+            if (input.type === 'select-one') {
+                value = input.options[input.selectedIndex].value;
+            } else {
+                value = input.value;
+            }
+    
+            // Викликати валідацію
+            if (input.type === 'select-one') {
+                this.selectValidation(id, value);
+            } else {
+                this.inputValidation(id, value);
+            }
+            console.log(this.valid);
             visitData[id] = value;
         });
 
-        this.visit = visitData;
-        console.log(this.visit);
-
-        this.closeVisitModal();
-
-        this.pushToServer(this.visit);
+        if(this.valid){
+            this.visit = visitData;
+            console.log(this.visit);
+            this.closeVisitModal();
+            this.pushToServer(this.visit);
+        }else{
+            console.log("(");
+        }       
+    }
+    selectValidation(id, value) {
+        if (value === "") {
+            this.valid = false
+        }
+        
+    }
+    inputValidation(id,value){
+        const stringFields = [
+            "purpose",
+            "description",
+            "fullName",
+            "cardiovascularDiseases",
+            "lastVisitDate"
+        ];
+        if (stringFields.includes(id)) {
+            if (typeof value !== 'string' || value.trim() === '') {
+                console.log(`Поле ${id} повинно бути строкою та не може бути порожнім.`);
+                this.validation = false;
+            }
+        }
+        if (id === "age") {
+            if (isNaN(value)) {
+                console.log(`Поле ${id} повинно бути числом.`);
+                this.valid = false;
+            }
+        } else if (id === "bmi") {
+            const bmiValue = parseFloat(value);
+            if (isNaN(bmiValue) || bmiValue < 10 || bmiValue > 50) {
+                console.log(`Поле ${id} повинно бути реалістичним індексом маси тіла.`);
+                this.valid = false;
+            }
+        } else if (id === "pressure") {
+            const pressureRegex = /^\d+([\/\\])\d+$/;
+            if (!pressureRegex.test(value)) {
+                console.log(`Поле ${id} повинно бути у форматі 80/120 або 80\\120.`);
+                this.valid = false;
+            } else {
+                const [lower, upper] = value.split('/').map(Number);
+                if (lower < 30 || upper < lower || upper > 300) {
+                    console.log(`Поле ${id} повинно бути в діапазоні 30-150/30-300.`);
+                    this.valid = false;
+                }
+            }
+        }
     }
 
     pushToServer(visit) {
