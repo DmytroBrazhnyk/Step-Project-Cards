@@ -192,7 +192,6 @@ class Card {
             <div class="buttonsContainer">
                 <button class="showMoreBtn">Показати більше</button>
                 <button class="editBtn">Редагувати</button>
-                
             </div>
             <button class="deleteIcon">❌</button>
         `;
@@ -255,9 +254,11 @@ class Card {
             this.modal = document.createElement('div');
             this.modal.classList.add('modal');
             this.modal.innerHTML = `
-                <div class="modal-content">
+                <div class="modal-edit-content">
                     <h2>Редагування даних</h2>
-                    ${this.renderEditFields()}
+                    <section>
+                        ${this.renderEditFields()}
+                    </section>
                     <button class="saveBtn">Зберегти</button>
                 </div>
             `;
@@ -347,11 +348,15 @@ class Login {
         const loginModal = document.createElement('div');
         loginModal.classList.add('loginModal');
         loginModal.innerHTML = `
-            <label for="email">Email:</label>
-            <input type="email" id="email" />
+            <section>
+                <label for="email">Email:</label>
+                <input type="email" id="email" />
+            </section>            
             <br />
-            <label for="password">Пароль:</label>
-            <input type="password" id="password" />
+            <section>
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" />
+            </section>
             <br />
             <button id="loginBtn">Увійти</button>
             <p id="error-message" class="error-message"></p> <!-- Додали елемент для відображення повідомлення про помилку -->

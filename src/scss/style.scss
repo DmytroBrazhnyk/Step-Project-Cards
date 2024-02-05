@@ -2,16 +2,16 @@
 @import 'global/*.scss';
 @import '**/_*.scss';
 @import '../components/**/*.scss';
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap');
 
 :root {
-    --bgColor: #a3c9d9;
+    --bgColor: #A3C9D9;
     --borderColor: #243e73;
-    --buttonColor: #5679bf;
+    --buttonColor: #849dcf;
     --color1: #84b1d9;
     --color2: #b3cff2;
+    --highlight: #c5ddf5;
     --regular-font: 'Montserrat', sans-serif;
-    --bold-font: 'Montserrat', sans-serif;
 }
 
 *{
@@ -23,13 +23,34 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-    background-color: #f0f0f0;
+    background-color: var(--color1);
 }
 .header-userActions-createCard{
     display: none;
 }
-
-
+.main{
+    background-color: var(--bgColor);
+    min-height: calc(100vh - 38.5px);
+}
+button{
+    border: var(--borderColor) solid 1.5px;
+    border-radius: 15px;
+    background-color: var(--buttonColor);
+    font-weight: 500;
+    cursor: pointer;
+}
+select{
+    background-color: var(--highlight);
+    border: var(--borderColor) solid 1px;
+    border-radius: 15px;
+    text-align: center;
+}
+input{
+    background-color: var(--highlight);
+    border: var(--borderColor) solid 1px;
+    border-radius: 15px;
+    text-align: center;
+}
 //-------------Login----------
 .loginModal {
     display: block;
@@ -38,13 +59,19 @@
     left: 50%;
     transform: translate(-50%, -50%);
     padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    background-color: var(--color2);
+    box-shadow: 0 0 100px rgba(0, 0, 0, 0.5);
     z-index: 1000;
+    section{
+        display: flex;
+        justify-content: space-between;
+    }
+    #loginBtn{
+        margin: 0 37%;
+    }
 }
 //---------CreateVisitModal-------------
 .creadeVisitModal{
-    
     position: fixed;
     top: 50%;
     left: 50%;
@@ -52,7 +79,9 @@
     width: 600px;
     min-height: 200px;
     border: 2px solid black;
-    background: lightblue;
+    background: var(--color2);
+    border: var(--borderColor) solid 2px;
+    border-radius: 15px;
     .modal-content{
         padding: 20px;
         #fieldsContainer{
@@ -63,10 +92,10 @@
                 display: flex;
                 flex-direction: column;
                 input{
-                    width: 75%;
+                    width: 83%;
                 }
                 select{
-                    width: 30%;
+                    width: 40%;
                 }
             }
         }
@@ -77,13 +106,14 @@
 .visitCard{
     margin: 10px auto 0;
     padding: 5px;
-    border: 2px solid black;
     max-width: 90%;
     position: relative;
     display: flex;
     flex-direction: column;
     gap: 10px;
     background-color: var(--color2);
+    border: var(--borderColor) solid 2px;
+    border-radius: 15px;
     p{
         margin: 5px;
     }
@@ -106,18 +136,47 @@
         position: absolute;
         top: 10px;
         right: 10px;
+        border: none;
+        border-radius: 0;
+        background-color: transparent;
+        cursor: pointer;
     }
-    // .additionalInfoContainer{
-    //     background: lightblue;
-    // }
+    .modal{
+        h2{
+            margin: 5px;
+        }
+        label{
+            margin: 5px 5px;
+        }
+        button{
+            margin: 5px;
+        }
+        section{
+            width: 40%;
+            display: flex;
+            flex-wrap: wrap;
+            div{
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+    }
 }
 .additionalInfoContainer {
-    border: 2px solid black;
     display: none;
+    background-color: var(--highlight);
+    border: var(--borderColor) solid 2px;
+    border-radius: 15px;
 }
 .active{
     display: block;
 }
 .hidden{
     display: none;
+}
+
+.filter-form{
+    padding: 10px 0 0 10px;
 }
