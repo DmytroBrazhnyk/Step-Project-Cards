@@ -3,12 +3,10 @@ const loginButton = document.getElementById('header-userActions-loginButton');
 loginButton.addEventListener("click", () => new Login());
 let userToken = "";
 
-
 const createCardButton = document.getElementById('header-userActions-createCard');
 createCardButton.addEventListener('click', () => {
     let createVisit = new CreateVisitModal();
 });
-
 
 class CreateVisitModal {
     constructor() {
@@ -139,7 +137,6 @@ class CreateVisitModal {
         this.fieldsContainer.appendChild(selectField);
     }
 }
-
 //----------------------------------------------------------------------------------------
 class Card {
     static currentEditingCard = null;
@@ -485,21 +482,7 @@ class Filter {
         });
     }
 }
-
 const filter = new Filter();
-//----------------------------------------------------------------
-// const testObj ={ 
-//             selectedDoctor: 'Кардіолог',
-//             purpose: 'Регулярний огляд',
-//             description: 'Аналіз крові та артеріального тиску',
-//             urgency: 'Пріоритетна',
-//             fullName: 'Петренко Іван Петрович',
-//             pressure: '120/80',
-//             bmi: 24.5,
-//             cardiovascularDiseases: 'Немає',
-//             age: 35,
-//             lastVisitDate: '2023-01-09'
-//         }
 const translations = {
             doctorName: 'Лікар',
             purpose: 'Мета візиту',
@@ -512,12 +495,3 @@ const translations = {
             age: 'Вік',
             lastVisitDate: 'Дата останнього відвідування'
 };
-
-        // const cardInstance = new Card(testObj);
-        // cardInstance.addToVisitsList();
-
-        // const cardInstance2 = new Card(testObj);
-        // cardInstance2.addToVisitsList()
-
-        // const cardInstance3 = new Card(testObj);
-        // cardInstance3.addToVisitsList()
